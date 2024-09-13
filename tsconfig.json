@@ -1,12 +1,26 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["es6"],
+    "allowJs": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
     "strict": true,
+    "baseUrl": "./",
+    "resolveJsonModule": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+      "@app/*": ["app/*"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@constants/*": ["constants/*"],
+      "@assets/*": ["assets/*"],
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
   },
   "include": [
     "**/*.ts",
