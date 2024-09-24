@@ -1,15 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import SignIn from "./(auth)/sign-in";
 
-const index = () => {
+const Orders = () => {
   return (
     <View>
-      <SignIn />
+      <Text>Orders</Text>
     </View>
   );
 };
 
-export default index;
+export default Orders;
 
 const styles = StyleSheet.create({});
