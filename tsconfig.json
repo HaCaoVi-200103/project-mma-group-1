@@ -18,6 +18,7 @@
       "@hooks/*": ["hooks/*"],
       "@constants/*": ["constants/*"],
       "@assets/*": ["assets/*"],
+      "@redux/*": ["redux/*"],
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

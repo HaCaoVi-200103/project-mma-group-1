@@ -26,6 +26,7 @@ module.exports = {
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint", "react-native", "expo"],
   "rules": {
+    "import/no-named-as-default": 0,
     "react/no-unescaped-entities": "off",
     "react/react-in-jsx-scope": "off",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
