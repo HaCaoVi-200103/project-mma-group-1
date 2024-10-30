@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Orders = () => {
+const StaffCakeManagement = () => {
   return (
     <View>
-      <Text>Orders</Text>
+      <Text>StaffCakeManagement</Text>
     </View>
   );
 };
 
-export default Orders;
+export default StaffCakeManagement;
 
 const styles = StyleSheet.create({});

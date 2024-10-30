@@ -4,7 +4,7 @@ import React from "react";
 const Management = () => {
   return (
     <View>
-      <Text>Management</Text>
+      <Text>Managements</Text>
     </View>
   );
 };

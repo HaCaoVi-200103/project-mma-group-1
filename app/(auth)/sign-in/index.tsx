@@ -22,10 +22,10 @@ const SignIn: React.FC = () => {
         router.push("/Home");
         break;
       case "staff":
-        router.push("/StaffOrders");
+        router.push("/StaffOrderManagement");
         break;
       case "manager":
-        router.push("/ManagerOrders");
+        router.push("/Managements");
         break;
       default:
         alert("Role không hợp lệ!");
