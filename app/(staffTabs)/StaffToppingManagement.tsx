@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Managements = () => {
+const StaffToppingManagement = () => {
   return (
     <View>
-      <Text>Managements</Text>
+      <Text>StaffToppingManagement</Text>
     </View>
   );
 };
 
-export default Managements;
+export default StaffToppingManagement;
 
 const styles = StyleSheet.create({});
