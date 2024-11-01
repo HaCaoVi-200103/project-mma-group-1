@@ -18,7 +18,6 @@ const useCreateAxios = () => {
 
       try {
         const token = await AsyncStorage.getItem('token');
-
         const response = await axios.request<T>({
           method,
           url,
@@ -29,7 +28,6 @@ const useCreateAxios = () => {
           },
           ...config,
         });
-
         return response;
       } catch (error) {
         console.error("API Request Error:", error);
