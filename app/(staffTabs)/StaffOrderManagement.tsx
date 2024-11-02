@@ -5,7 +5,9 @@ import  useCreateAxios  from "../../hooks/axiosHook";
 const StaffOrderManagement = () => {
   const { createRequest } = useCreateAxios();
   useEffect(() => {
-    createRequest("get",'/cakes'
+    createRequest("get",'/cakes',{
+      id:'1223242'
+    }
     ).then(response => {
       // Lấy data bằng respone data
       console.log(response.data);
