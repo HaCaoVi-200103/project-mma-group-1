@@ -24,15 +24,16 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
   // Đỏ đậm
-  BURGUNDYRED:"#97201E", 
+  BURGUNDYRED: "#97201E",  // Hạn chế sài màu này
   // Xám đậm
-  SANDSTONE:"#BDB09E",
+  SANDSTONE: "#BDB09E",
   // Đỏ nhạt
-  BRICKRED:"#CE5351",
+  BRICKRED: "#CE5351",
   // Đen
-  CHOCOLATEBROWN:"#55432C",
+  CHOCOLATEBROWN: "#55432C",
   // Xám nhạt
-  FOGGYGRAY:"#E5DFDB",
+  FOGGYGRAY: "#E5DFDB",
   // Trắng
-  IVORYWHITE:"#F9F6F2",
+  IVORYWHITE: "#F9F6F2",
+  // Màu nền 
 };

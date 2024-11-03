@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import SignIn from "./(auth)/sign-in";
+import Home from "./(customerTabs)/Home";
 
 const index = () => {
   return (
     <View>
-      <SignIn />
+      <Home />
     </View>
   );
 };
