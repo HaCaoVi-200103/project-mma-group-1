@@ -1,16 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import SignIn from "./(auth)/sign-in";
-import Catalog from "./CustomerScreens/CakeCatalog";
 
-const index = () => {
+const StaffStatistic = () => {
   return (
     <View>
-      <SignIn />
+      <Text>StaffStatistic</Text>
     </View>
   );
 };
 
-export default index;
+export default StaffStatistic;
 
 const styles = StyleSheet.create({});
