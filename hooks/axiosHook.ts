@@ -31,7 +31,6 @@ const useCreateAxios = () => {
           },
           ...config,
         });
-
         return response;
       } catch (error) {
         console.error("API Request Error:", error);
