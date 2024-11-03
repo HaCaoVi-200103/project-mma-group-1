@@ -5,20 +5,23 @@ import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import Input from "@components/ManagerStaffComponent/Input";
 import { Colors } from "@constants/Colors";
 import { router } from "expo-router";
+import useCreateAxios from "@hooks/axiosHook";
+import axios from "axios";
+const id = "6720a5a2588e2bd477bfd1a3";
 
 const ChangePassword = () => {
   const navigation = useNavigation();
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
-
+  const { createRequest } = useCreateAxios();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
 
-  const handleSendEmailCode = () => {
+  const handleSendEmailCode = async () => {
     if (oldPass === "" || newPass === "" || confirm === "") {
       return Alert.alert("Missing required field!!!");
     }
@@ -26,10 +29,25 @@ const ChangePassword = () => {
     if (newPass !== confirm) {
       return Alert.alert("Password does not match password confirmation");
     }
-    router.push({
-      pathname: "/ProfileScreen/FieldCode",
-      params: { newPass: newPass },
-    });
+
+    const res = await axios.post(
+      "http://10.0.2.2:8080/api/v1/profile/check-password",
+      {
+        userId: id,
+        password: oldPass,
+      }
+    );
+    if (res.status === 200) {
+      if (res.data) {
+        return router.push({
+          pathname: "/ProfileScreen/FieldCode",
+          params: { newPass: newPass },
+        });
+      }
+      return Alert.alert("Old Password is incorrect!!!");
+    }
+
+    return Alert.alert("Old Password is incorrect!!!");
   };
 
   return (
