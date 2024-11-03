@@ -14,7 +14,6 @@ const ChangePassword = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
-  const { createRequest } = useCreateAxios();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,

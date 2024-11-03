@@ -13,7 +13,7 @@ import axios from "axios";
 import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import { Colors } from "@constants/Colors";
 const ProfileCustomizeCustomer = () => {
-  const { id } = useLocalSearchParams();
+  const { staffId } = useLocalSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -25,17 +25,17 @@ const ProfileCustomizeCustomer = () => {
   const { createRequest } = useCreateAxios();
   const navigation = useNavigation();
 
-  const fetchApiStaffByID = async () => {
+  const fetchApiStaffBystaffId = async () => {
     try {
-      const res = await createRequest("get", `/profile/customer/${id}`);
+      const res = await createRequest("get", `/staff/${staffId}`);
 
       if (res.status === 200) {
         const data: any = res.data;
-        setName(data.user_name);
+        setName(data.staff_name);
         setFullName(data.full_name);
         setAddress(data.address);
         setPhone(data.phone_number);
-        setAvatar(data.user_avatar);
+        setAvatar(data.staff_avatar);
         setEmail(data.email);
       }
       return null;
@@ -47,7 +47,7 @@ const ProfileCustomizeCustomer = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchApiStaffByID();
+      fetchApiStaffBystaffId();
     }, [])
   );
 
@@ -67,7 +67,7 @@ const ProfileCustomizeCustomer = () => {
       }
       if (file === null) {
         const data = {
-          user_name: name,
+          staff_name: name,
           phone_number: phone,
           full_name: fullName,
           address: address,
@@ -75,7 +75,7 @@ const ProfileCustomizeCustomer = () => {
 
         const res = await createRequest(
           "put",
-          `/profile/update-customer/${id}`,
+          `/profile/update-staff/${staffId}`,
           data,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -96,11 +96,11 @@ const ProfileCustomizeCustomer = () => {
         name: "avatar.jpg",
         type: "image/jpeg",
       });
-      //   const res = await createRequest("put", `/staff/${staffId}`, formData, {
+      //   const res = await createRequest("put", `/staff/${staffstaffId}`, formData, {
       //     headers: { "Content-Type": "multipart/form-data" },
       //   });
       const res = await axios.put(
-        `http://10.0.2.2:8080/api/v1/profile/update-customer/${id}`,
+        `http://10.0.2.2:8080/api/v1/profile/update-staff/${staffId}`,
         formData,
         {
           headers: {
