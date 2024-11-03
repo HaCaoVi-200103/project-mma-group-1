@@ -20,6 +20,14 @@ export default function AppLayout() {
         <Stack.Screen name="(customerTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(staffTabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(managerTabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="DetailScreens/CakeManagementDetail"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DetailScreens/ToppingManagementDetail"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
     </Provider>
