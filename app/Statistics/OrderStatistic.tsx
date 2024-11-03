@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import useCreateAxios from "@hooks/axiosHook";
@@ -186,8 +185,8 @@ export default function OrderStatistic() {
             height={220}
             chartConfig={{
               backgroundColor: Colors.IVORYWHITE,
-              backgroundGradientFrom:  Colors.IVORYWHITE,
-              backgroundGradientTo:  Colors.IVORYWHITE,
+              backgroundGradientFrom: Colors.IVORYWHITE,
+              backgroundGradientTo: Colors.IVORYWHITE,
               decimalPlaces: 2,
               color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
@@ -279,19 +278,3 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
 });
-=======
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-
-const OrderStatistic = () => {
-  return (
-    <View>
-      <Text>OrderStatistic</Text>
-    </View>
-  );
-};
-
-export default OrderStatistic;
-
-const styles = StyleSheet.create({});
->>>>>>> 8972f3e3d4351f2d5b57fd5cc3c3a20b52e690a3

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   FlatList,
   StyleSheet,
@@ -94,13 +93,6 @@ const StaffOrderManagement = () => {
     if (!search) setIsSearch(false);
   }, [search]);
 
-=======
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
-import useCreateAxios from "../../hooks/axiosHook";
-
-const StaffOrderManagement = () => {
->>>>>>> 8972f3e3d4351f2d5b57fd5cc3c3a20b52e690a3
   return (
     <View style={styles.container}>
       <Text style={styles.orderTitle}>Order Management</Text>
@@ -115,7 +107,8 @@ const StaffOrderManagement = () => {
         />
         <TouchableOpacity
           onPress={() => {
-            setIsSearch(search ? true : false), setPageIndex(0);
+            setIsSearch(search ? true : false);
+            setPageIndex(0);
           }}
           style={styles.searchLableContainer}
         >
