@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import useCreateAxios from "../../hooks/axiosHook";
+import { useRouter } from "expo-router";
+
 interface Cake {
   cake_name: string;
   cake_price: number;
@@ -17,15 +19,17 @@ interface Cake {
 const CakeAllScreen: React.FC = () => {
   const [cakes, setCakes] = useState<Cake[]>([]);
   const { createRequest } = useCreateAxios();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCakes = async () => {
       try {
         const response = await createRequest<Cake[]>(
           "get",
-          "/CakeCatalog/all-cake"
+          "/cakecatalog/all-cake"
         );
-        setCakes(response.data);
+        const saleCakes = response.data.slice(0, 6);
+        setCakes(saleCakes);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu loại bánh:", error);
       }
@@ -33,7 +37,6 @@ const CakeAllScreen: React.FC = () => {
 
     fetchCakes();
   }, [createRequest]);
-
 
   const renderCake = ({ item }: { item: Cake }) => (
     <View style={styles.cakeCard}>
@@ -54,6 +57,17 @@ const CakeAllScreen: React.FC = () => {
         renderItem={renderCake}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.listContainer}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <TouchableOpacity
+            style={styles.viewMoreButton}
+            onPress={() => router.push("/DetailScreens/AllCake")}
+          >
+            <Text style={styles.viewMoreText}>View all cake</Text>
+          </TouchableOpacity>
+        }
       />
     </View>
   );
@@ -64,7 +78,6 @@ export default CakeAllScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#FFF",
   },
   heading: {
@@ -76,7 +89,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   cakeCard: {
-    width: "100%",
+    width: "47%",
+    height:210,
     backgroundColor: "#FFF",
     borderRadius: 15,
     padding: 10,
@@ -86,13 +100,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    flexDirection: "row",
   },
   cakeImage: {
-    width: 80,
-    height: 80,
+    width: 160,
+    height: 140,
     borderRadius: 10,
-    marginRight: 10,
   },
   cakeName: {
     fontSize: 16,
@@ -101,23 +113,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cakePrice: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#FF6347",
     fontWeight: "bold",
     marginTop: 5,
+    marginRight: 70,
   },
   addButton: {
     backgroundColor: "#FF6347",
     borderRadius: 20,
-    width: 30,
-    height: 30,
+    width: 23,
+    height: 23,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 10,
+    marginLeft: 100,
+    marginTop: -21,
   },
   addButtonText: {
     color: "#FFF",
-    fontSize: 18,
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  viewMoreButton: {
+    backgroundColor: "#FF6347",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  viewMoreText: {
+    color: "#FFF",
+    fontSize: 16,
     fontWeight: "bold",
   },
 });

@@ -17,7 +17,7 @@ const Catalog: React.FC = () => {
       try {
         const response = await createRequest<Cake[]>(
           "get",
-          "/CakeCatalog/catalog"
+          "/cakecatalog/catalog"
         );
         console.log(response.data);
 
@@ -56,8 +56,10 @@ export default Catalog;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: "#FFF",
+    marginLeft: -10,
+    paddingBottom: 40,
   },
   heading: {
     fontSize: 20,
@@ -74,10 +76,10 @@ const styles = StyleSheet.create({
   },
   cakeCard: {
     width: 150,
-    height: 200,
-    marginRight: 10,
+    height: 185,
+    marginRight: 15,
     backgroundColor: "#FFF",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 10,
     alignItems: "center",
     shadowColor: "#000",
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
   },
   cakeImage: {
     width: 140,
-    height: 150,
+    height: 140,
     borderRadius: 8,
     marginBottom: 10,
   },
