@@ -1,12 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
+import ProfileScreen from "@app/ProfileScreen";
 
 const Others = () => {
-  return (
-    <View>
-      <Text>Others</Text>
-    </View>
-  );
+  return <ProfileScreen />;
 };
 
 export default Others;
