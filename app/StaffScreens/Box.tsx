@@ -57,7 +57,11 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
       </TouchableOpacity>
 
       <View style={{ marginVertical: 10 }}>
-        <Button color={Colors.BURGUNDYRED} title="Logout" />
+        <Button
+          onPress={() => router.push("(customerTabs)/Home")}
+          color={Colors.BURGUNDYRED}
+          title="Logout"
+        />
       </View>
     </SafeAreaView>
   );

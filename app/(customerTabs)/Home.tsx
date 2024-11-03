@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import CakeBestSellingScreen from "../CustomerScreens/CakeSale";
 import CakeAllScreen from "../CustomerScreens/CakeSixScreen";
+import { router } from "expo-router";
 
 const Home = () => {
   const data = [
@@ -38,7 +39,7 @@ const GreetingSection = () => (
     <Text style={styles.greeting}>Hi there!</Text>
     <Text style={styles.subtitle}>What are you looking for today?</Text>
     <View>
-      <TouchableOpacity onPress={() => console.log("Route to login")}>
+      <TouchableOpacity onPress={() => router.push("(auth)/sign-in")}>
         <Text style={styles.loginLink}>Login</Text>
       </TouchableOpacity>
     </View>
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     color: "#FF6347",
     fontWeight: "bold",
     marginLeft: 300,
-    marginTop:-40,
+    marginTop: -40,
   },
   subtitle: {
     fontSize: 16,

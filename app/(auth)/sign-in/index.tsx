@@ -6,13 +6,13 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import { AxiosResponse } from "axios";
 
 // Define the expected structure of the API response
 interface LoginResponse {
-  token:string
+  token: string;
   role: string;
 }
 
@@ -21,29 +21,33 @@ const SignIn: React.FC = () => {
   const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { createRequest } = useCreateAxios();
-
+  const navigation = useNavigation();
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
 
   const handleLogin = async () => {
-    
     if (!user_name || !password) {
       alert("Please enter your information!");
       return;
     }
 
     try {
-  console.log("User Name:", user_name, " Password:", password);
-  
-  const response: AxiosResponse<LoginResponse> = await createRequest(
-    "post",
-    "/auth/login",
-    { user_name, password }
-  );
+      console.log("User Name:", user_name, " Password:", password);
 
-  console.log("Full Response:", response); // Log the full response
-  console.log("Data from Response:", response.data); // Log the specific data part
+      const response: AxiosResponse<LoginResponse> = await createRequest(
+        "post",
+        "/auth/login",
+        { user_name, password }
+      );
 
-      const {token, role } = response.data;
-      console.log("role: ",role)
+      console.log("Full Response:", response); // Log the full response
+      console.log("Data from Response:", response.data); // Log the specific data part
+
+      const { token, role } = response.data;
+      console.log("role: ", role);
       getScreenByRole(role);
     } catch (error) {
       console.error("Login error:", error);
@@ -94,11 +98,14 @@ const SignIn: React.FC = () => {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity onPress={()=>handleLogin()} style={styles.button}>
+        <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleRegister} style={[styles.button, styles.registerButton]}>
+        <TouchableOpacity
+          onPress={handleRegister}
+          style={[styles.button, styles.registerButton]}
+        >
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
 
