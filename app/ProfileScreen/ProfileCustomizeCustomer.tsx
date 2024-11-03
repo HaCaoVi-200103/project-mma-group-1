@@ -1,14 +1,6 @@
-import {
-  Alert,
-  Button,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Button, Image, TouchableOpacity, View } from "react-native";
 import React, { useCallback, useState } from "react";
 import {
-  router,
   useFocusEffect,
   useLocalSearchParams,
   useNavigation,
@@ -20,11 +12,9 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import { Colors } from "@constants/Colors";
-
-const UpdateStaff = () => {
-  const { staffId } = useLocalSearchParams();
+const ProfileCustomizeCustomer = () => {
+  const { customerId } = useLocalSearchParams();
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
   const [fullName, setFullName] = useState("");
@@ -37,16 +27,15 @@ const UpdateStaff = () => {
 
   const fetchApiStaffByID = async () => {
     try {
-      const res = await createRequest("get", `/staff/${staffId}`);
+      const res = await createRequest("get", `/profile/customer/${customerId}`);
 
       if (res.status === 200) {
         const data: any = res.data;
-        setName(data.staff_name);
-        setPassword(data.password);
+        setName(data.user_name);
         setFullName(data.full_name);
         setAddress(data.address);
         setPhone(data.phone_number);
-        setAvatar(data.staff_avatar);
+        setAvatar(data.user_avatar);
         setEmail(data.email);
       }
       return null;
@@ -67,51 +56,38 @@ const UpdateStaff = () => {
     return regex.test(phone);
   };
 
-  const handleAddStaff = async () => {
+  const handleUpdateCustomer = async () => {
     try {
-      if (
-        name === "" ||
-        password === "" ||
-        fullName === "" ||
-        phone === "" ||
-        address === ""
-      ) {
+      if (name === "" || fullName === "" || phone === "" || address === "") {
         return Alert.alert("Warning", "Missing field");
       } else {
         if (!verifyPhoneNumber(phone)) {
           return Alert.alert("Warning", "Phone number is wrong!!!");
-        } else if (password.length < 6) {
-          return Alert.alert(
-            "Warning",
-            "Password must be minimun 6 charactor!!!"
-          );
         }
       }
       if (file === null) {
+        const data = {
+          user_name: name,
+          phone_number: phone,
+          full_name: fullName,
+          address: address,
+        };
+
         const res = await createRequest(
           "put",
-          `/staff/${staffId}`,
-          {
-            staff_name: name,
-            password: password,
-            phone_number: phone,
-            full_name: fullName,
-            address: address,
-          },
+          `/profile/update-customer/${customerId}`,
+          data,
           {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
         if (res.status === 201) {
-          return router.push("/ManagementScreens/ManageStaff");
+          return Alert.alert("Update Success");
         }
         return Alert.alert("Update Fail");
       }
 
       const formData = new FormData();
-      formData.append("staff_name", name);
-      formData.append("password", password);
       formData.append("phone_number", phone);
       formData.append("full_name", fullName);
       formData.append("address", address);
@@ -120,12 +96,11 @@ const UpdateStaff = () => {
         name: "avatar.jpg",
         type: "image/jpeg",
       });
-      console.log("form data: ", formData);
       //   const res = await createRequest("put", `/staff/${staffId}`, formData, {
       //     headers: { "Content-Type": "multipart/form-data" },
       //   });
       const res = await axios.put(
-        `http://10.0.2.2:8080/api/v1/staff/${staffId}`,
+        `http://10.0.2.2:8080/api/v1/profile/update-customer/${customerId}`,
         formData,
         {
           headers: {
@@ -134,11 +109,11 @@ const UpdateStaff = () => {
         }
       );
       if (res.status === 201) {
-        return router.push("/ManagementScreens/ManageStaff");
+        return Alert.alert("Update Success");
       }
     } catch (error) {
       console.error(error);
-      return Alert.alert("Errro Fail Cos FIle");
+      return Alert.alert("Error Fail Cos File");
     }
   };
   const pickImage = async () => {
@@ -164,7 +139,7 @@ const UpdateStaff = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <HeaderCustomize title="Update Staff" />
+      <HeaderCustomize title="Profile" />
 
       <View style={{ flex: 1 }}>
         <TouchableOpacity
@@ -200,6 +175,7 @@ const UpdateStaff = () => {
           />
         </TouchableOpacity>
         <Input
+          disable
           defaultValue={name}
           setValueP={setName}
           placeholder="Enter name"
@@ -212,14 +188,6 @@ const UpdateStaff = () => {
           placeholder="Enter email"
           label="Email"
         />
-        <Input
-          secure
-          placeholder="Enter password"
-          label="Password"
-          defaultValue={"nfdjnaoinrefd"}
-          setValueP={setPassword}
-        />
-        {/* <Input secure placeholder="Enter " label="Confirm password" setValueP={setConfirm}  /> */}
         <Input
           placeholder="Enter fullname"
           label="Full name"
@@ -241,7 +209,7 @@ const UpdateStaff = () => {
       </View>
       <View>
         <Button
-          onPress={() => handleAddStaff()}
+          onPress={() => handleUpdateCustomer()}
           color={Colors.BURGUNDYRED}
           title="UPDATE"
         ></Button>
@@ -250,4 +218,4 @@ const UpdateStaff = () => {
   );
 };
 
-export default UpdateStaff;
+export default ProfileCustomizeCustomer;
