@@ -1,8 +1,8 @@
 import { SafeAreaView } from "react-native";
 import React, { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
-import BoxProfile from "@components/ProfileComponent/box";
 import useCreateAxios from "@hooks/axiosHook";
+import BoxProfile from "./Box";
 const staffId = "6724a907f14e21cced1f60af";
 
 const ProfileStaff = () => {
@@ -36,7 +36,7 @@ const ProfileStaff = () => {
         avatar={
           data
             ? data.staff_avatar
-            : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg"
+            : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
         }
         email={data ? data.email : ""}
         fullName={data ? data.full_name : ""}

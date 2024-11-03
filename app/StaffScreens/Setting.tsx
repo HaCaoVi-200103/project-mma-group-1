@@ -3,7 +3,7 @@ import React from "react";
 import { router, useNavigation } from "expo-router";
 import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import { Colors } from "@constants/Colors";
-const customerId = "6720a5a2588e2bd477bfd1a3";
+const id = "6724a907f14e21cced1f60af";
 
 const Setting = () => {
   const navigation = useNavigation();
@@ -20,8 +20,8 @@ const Setting = () => {
         <Button
           onPress={() =>
             router.push({
-              pathname: "/ProfileScreen/ProfileCustomizeCustomer",
-              params: { id: customerId },
+              pathname: "/StaffScreens/ProfileCustomizeStaff",
+              params: { staffId: id },
             })
           }
           color={Colors.BURGUNDYRED}
