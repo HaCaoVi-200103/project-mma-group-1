@@ -16,8 +16,8 @@ import { Picker } from "@react-native-picker/picker";
 const StaffOrderManagement = () => {
   const { createRequest } = useCreateAxios();
   const numberOrderPage = 5;
-  const [orderFilter, setOrderFilter] = useState("Confirm");
-  const [search, setSearch] = useState<string>("");
+  const [orderFilter, setOrderFilter] = useState("All");
+  const [search, setSearch] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [numberPage, setNumberPage] = useState(1);
   const [order, setOrder] = useState([]);
@@ -38,8 +38,13 @@ const StaffOrderManagement = () => {
               start,
               end,
             });
-          } else {
+          } else if (orderFilter === "UnConfirm") {
             response = await createRequest("post", "/orders/unConfirmedOrder", {
+              start,
+              end,
+            });
+          } else {
+            response = await createRequest("post", "/orders/allOrder", {
               start,
               end,
             });
@@ -92,7 +97,6 @@ const StaffOrderManagement = () => {
     console.log(isSearch);
     if (!search) setIsSearch(false);
   }, [search]);
-
   return (
     <View style={styles.container}>
       <Text style={styles.orderTitle}>Order Management</Text>
@@ -107,8 +111,7 @@ const StaffOrderManagement = () => {
         />
         <TouchableOpacity
           onPress={() => {
-            setIsSearch(search ? true : false);
-            setPageIndex(0);
+            setIsSearch(search ? true : false), setPageIndex(0);
           }}
           style={styles.searchLableContainer}
         >
@@ -181,6 +184,28 @@ const StaffOrderManagement = () => {
       <View style={styles.filterContainer}>
         <TouchableOpacity
           onPress={() => {
+            setOrderFilter("All");
+            setPageIndex(0);
+          }}
+          style={[
+            orderFilter == "All"
+              ? styles.activeFilterBtn
+              : styles.unActiveFilterBtn,
+            { marginRight: 10, width: 50 },
+          ]}
+        >
+          <Text
+            style={
+              orderFilter == "All"
+                ? styles.activeFilterText
+                : styles.unactiveFilterText
+            }
+          >
+            All
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
             setOrderFilter("Confirm");
             setPageIndex(0);
           }}
@@ -207,16 +232,16 @@ const StaffOrderManagement = () => {
             setPageIndex(0);
           }}
           style={
-            orderFilter == "Confirm"
-              ? styles.unActiveFilterBtn
-              : styles.activeFilterBtn
+            orderFilter == "UnConfirm"
+              ? styles.activeFilterBtn
+              : styles.unActiveFilterBtn
           }
         >
           <Text
             style={
-              orderFilter == "Confirm"
-                ? styles.unactiveFilterText
-                : styles.activeFilterText
+              orderFilter == "UnConfirm"
+                ? styles.activeFilterText
+                : styles.unactiveFilterText
             }
           >
             Uncofirmed Order
@@ -294,7 +319,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 0,
     padding: 16,
   },
   orderText: {
