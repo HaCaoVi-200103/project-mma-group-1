@@ -11,6 +11,8 @@ import React from "react";
 import { router } from "expo-router";
 import { Colors } from "@constants/Colors";
 import { logout } from "utils/AsyncStore";
+import { addProfile } from "@redux/features/profile";
+import { useAppDispatch } from "@hooks/reduxHooks";
 interface Props {
   avatar: string;
   fullName: string;
@@ -18,6 +20,8 @@ interface Props {
 }
 const id = "6720a5a2588e2bd477bfd1a3";
 const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
+  const dispatch = useAppDispatch();
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableOpacity
@@ -59,7 +63,10 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
 
       <View style={{ marginVertical: 10 }}>
         <Button
-          onPress={() => logout()}
+          onPress={() => {
+            logout();
+            dispatch(addProfile({}));
+          }}
           color={Colors.BURGUNDYRED}
           title="Logout"
         />
