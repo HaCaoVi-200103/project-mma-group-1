@@ -53,21 +53,16 @@ const SignIn: React.FC = () => {
       if (token) {
         await setStore("token", token);
       }
-      getScreenByRole(role, token);
+      getScreenByRole(role);
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please check your credentials.");
     }
   };
 
-  const addProfileRedux = async (token: string) => {
+  const addProfileRedux = async () => {
     try {
       const res = await createRequest("get", "/auth/user");
-      // const res = await axios.get("http://10.0.2.2:8080/api/v1/auth/user", {
-      //   headers: {
-      //     Authorization: "Bearer " + token,
-      //   },
-      // });
       if (res.status === 200) {
         dispatch(addProfile(res.data));
       }
@@ -76,8 +71,8 @@ const SignIn: React.FC = () => {
     }
   };
 
-  const getScreenByRole = (role: string, token: string) => {
-    addProfileRedux(token);
+  const getScreenByRole = (role: string) => {
+    addProfileRedux();
     switch (role.toLowerCase()) {
       case "customer":
         router.push("/Home");
