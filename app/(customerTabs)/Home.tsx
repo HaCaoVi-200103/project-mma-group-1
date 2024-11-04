@@ -1,6 +1,6 @@
 import Catalog from "../CustomerScreens/CakeCatalog";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useCallback, useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -12,20 +12,19 @@ import {
 } from "react-native";
 import CakeBestSellingScreen from "../CustomerScreens/CakeSale";
 import CakeAllScreen from "../CustomerScreens/CakeSixScreen";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { useAppSelector } from "@hooks/reduxHooks";
 
 const Home = () => {
-  const [flat, setFlat] = useState(false);
   const profile: any = useAppSelector((state) => state.profile.profile);
   const data = [
     {
       id: "1",
       component: (
         <GreetingSection
-          avatar={profile.user_avatar}
+          avatar={profile && profile.user_avatar ? profile.user_avatar : ""}
           id={profile._id}
-          flat={flat}
+          flat={profile._id ? true : false}
         />
       ),
     },
@@ -35,12 +34,6 @@ const Home = () => {
     { id: "5", component: <Catalog /> },
     { id: "6", component: <CakeAllScreen /> },
   ];
-
-  useFocusEffect(
-    useCallback(() => {
-      setFlat(profile._id ? true : false);
-    }, [profile])
-  );
 
   return (
     <FlatList
@@ -107,7 +100,11 @@ const SearchSection = () => (
 const OfferSection = () => (
   <View style={styles.offerContainer}>
     <Image
-      source={require("../../assets/images/cakeSample.jpg")}
+      source={
+        require("../../assets/images/cakeSample.jpg")
+          ? require("../../assets/images/cakeSample.jpg")
+          : ""
+      }
       style={styles.offerImage}
     />
     <View style={styles.offerTextContainer}>
