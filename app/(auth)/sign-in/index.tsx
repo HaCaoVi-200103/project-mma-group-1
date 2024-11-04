@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
@@ -14,7 +15,6 @@ import { setStore } from "utils/AsyncStore";
 import { useAppDispatch } from "@hooks/reduxHooks";
 import { addProfile } from "@redux/features/profile";
 
-// Define the expected structure of the API response
 interface LoginResponse {
   token: string;
   role: string;
@@ -90,7 +90,7 @@ const SignIn: React.FC = () => {
   };
 
   const handleRegister = () => {
-    router.push("/sign-up"); // Navigate to the register page
+    router.push("/sign-up");
   };
   useEffect(() => {
     GoogleSignin.configure();
@@ -124,7 +124,14 @@ const SignIn: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.frame}>
-        <Text style={styles.title}> Sign In </Text>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("@assets/images/logo.jpeg")}
+            style={styles.logo}
+          />
+        </View>
+
+        <Text style={styles.title}>Sign In</Text>
 
         <TextInput
           style={styles.input}
@@ -143,7 +150,7 @@ const SignIn: React.FC = () => {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity onPress={() => handleLogin()} style={styles.button}>
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
@@ -154,10 +161,15 @@ const SignIn: React.FC = () => {
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => loginWithGoogle()}
-          style={styles.googleButton}
-        >
+        <TouchableOpacity onPress={loginWithGoogle} style={styles.googleButton}>
+          <Image
+            source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" }}
+            style={styles.googleIcon}
+          />
+          <Image
+            source={require("@assets/images/google.png")}
+            style={styles.additionalIcon}
+          />
           <Text style={styles.googleButtonText}>Login with Google</Text>
         </TouchableOpacity>
 
@@ -173,81 +185,106 @@ export default SignIn;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 180,
+    backgroundColor: "#F0E5CF",
   },
   frame: {
     width: 350,
-    paddingVertical: 30,
+    paddingVertical: 40,
     paddingHorizontal: 30,
-    borderRadius: 10,
-    backgroundColor: "#BDB09E",
+    borderRadius: 15,
+    backgroundColor: "#E9DAC1",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowRadius: 6,
     alignItems: "center",
+  },
+  logoContainer: {
+    marginBottom: 20,
+    borderRadius: 40, // Half of the logo width and height for circular shape
+    overflow: "hidden",
+    width: 160,
+    height: 160,
+  },
+  logo: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#55432C",
+    color: "#6E4B1F",
     marginBottom: 20,
   },
   input: {
     width: "100%",
-    padding: 10,
+    padding: 12,
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: "#E5DFDB",
-    backgroundColor: "#F9F6F2",
-    marginBottom: 10,
-    fontSize: 14,
+    borderColor: "#D3C3B1",
+    backgroundColor: "#FFF",
+    marginBottom: 12,
+    fontSize: 16,
   },
   button: {
     width: "100%",
-    padding: 12,
-    backgroundColor: "#55432C",
+    paddingVertical: 14,
+    backgroundColor: "#6E4B1F",
     borderRadius: 10,
     marginTop: 10,
   },
   buttonText: {
-    color: "#F9F6F2",
+    color: "#FFF",
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 16,
   },
   googleButton: {
+    flexDirection: "row",
+    alignItems: "center",
     width: "100%",
-    padding: 12,
-    backgroundColor: "#BDB09E",
+    paddingVertical: 14,
+    backgroundColor: "white",
     borderRadius: 10,
     marginTop: 10,
   },
+  googleIcon: {
+    width: 20,
+    height: 20,
+    marginLeft: 30,
+  },
+  additionalIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 20,
+  },
   googleButtonText: {
-    color: "#55432C",
+    color: "black",
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
+    flex: 1,
+    marginRight: 60,
+
   },
   linkButton: {
-    marginTop: 10,
-    alignItems: "center",
+    marginTop: 15,
   },
   linkText: {
-    color: "#55432C",
+    color: "#6E4B1F",
     fontWeight: "bold",
     fontSize: 16,
   },
   registerButton: {
-    backgroundColor: "#55432C",
-    padding: 12,
-    borderRadius: 10,
+    backgroundColor: "#8B5E3B",
     marginTop: 10,
   },
   registerButtonText: {
-    color: "#F9F6F2",
+    color: "#FFF",
     fontWeight: "bold",
     fontSize: 16,
     textAlign: "center",
