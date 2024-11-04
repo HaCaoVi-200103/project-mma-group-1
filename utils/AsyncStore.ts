@@ -21,6 +21,7 @@ export const removeStore = async (name: string) => {
   return true;
 };
 
+
 export const setStore = async (key: string, value: string) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -31,9 +32,13 @@ export const setStore = async (key: string, value: string) => {
   }
 };
 
+
 export const logout = async () => {
   GoogleSignin.signOut();
   await removeStore("token");
 
   return router.push("/");
 };
+
+
+
