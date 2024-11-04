@@ -14,6 +14,7 @@ import CakeBestSellingScreen from "../CustomerScreens/CakeSale";
 import CakeAllScreen from "../CustomerScreens/CakeSixScreen";
 import { router, useFocusEffect } from "expo-router";
 import { useAppSelector } from "@hooks/reduxHooks";
+import { getStore } from "utils/AsyncStore";
 
 const Home = () => {
   const [flat, setFlat] = useState(false);
@@ -36,10 +37,16 @@ const Home = () => {
     { id: "6", component: <CakeAllScreen /> },
   ];
 
+  const getToken = async () => {
+    const token = await getStore("token");
+
+    setFlat(token.length === 0 ? false : true);
+  };
+
   useFocusEffect(
     useCallback(() => {
-      setFlat(profile._id ? true : false);
-    }, [profile])
+      getToken();
+    }, [])
   );
 
   return (
