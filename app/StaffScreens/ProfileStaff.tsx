@@ -3,9 +3,12 @@ import React, { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import BoxProfile from "./Box";
-const staffId = "6724a907f14e21cced1f60af";
+import { useAppSelector } from "@hooks/reduxHooks";
+// const staffId = "6724a907f14e21cced1f60af";
 
 const ProfileStaff = () => {
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  const staffId = profile._id;
   const navigation = useNavigation();
   const { createRequest } = useCreateAxios();
   const [data, setData]: any = useState(null);

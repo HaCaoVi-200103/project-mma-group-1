@@ -10,13 +10,18 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import React from "react";
 import { router } from "expo-router";
 import { Colors } from "@constants/Colors";
+import { logout } from "utils/AsyncStore";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { addProfile } from "@redux/features/profile";
 interface Props {
   avatar: string;
   fullName: string;
   email: string;
 }
-const id = "6724a907f14e21cced1f60af";
+// const id = "6724a907f14e21cced1f60af";
 const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  const dispatch = useAppDispatch();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <TouchableOpacity
@@ -24,7 +29,7 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
         onPress={() =>
           router.push({
             pathname: "/StaffScreens/ProfileCustomizeStaff",
-            params: { staffId: id },
+            params: { staffId: profile._id },
           })
         }
       >
@@ -58,7 +63,10 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
 
       <View style={{ marginVertical: 10 }}>
         <Button
-          onPress={() => router.push("(customerTabs)/Home")}
+          onPress={() => {
+            logout();
+            dispatch(addProfile({}));
+          }}
           color={Colors.BURGUNDYRED}
           title="Logout"
         />
