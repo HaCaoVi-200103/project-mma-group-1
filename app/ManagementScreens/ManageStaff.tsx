@@ -18,13 +18,13 @@ const ManageStaff = () => {
   const [filter, setFilter] = useState("");
   const [filterData, setFilterData]: any = useState([]);
   const [active, setActive] = useState(false);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerShown: false,
+  //   });
+  // }, [navigation]);
 
   const getData = async () => {
     try {
@@ -112,8 +112,8 @@ const ManageStaff = () => {
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <HeaderCustomize title="Manager Staff" />
+      <View style={styles.container}>
+        {/* <HeaderCustomize title="Manager Staff" /> */}
         <View style={styles.boxButton}>
           <ModalCustomize
             refetch={getData}
@@ -148,7 +148,7 @@ const ManageStaff = () => {
             />
           )}
         </View>
-      </SafeAreaView>
+      </View>
     </>
   );
 };
