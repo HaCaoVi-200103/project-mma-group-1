@@ -1,4 +1,3 @@
-import { useAppDispatch } from "@hooks/reduxHooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
