@@ -6,10 +6,11 @@ import {
   View,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import { AxiosResponse } from "axios";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 interface LoginResponse {
   token: string;
@@ -20,6 +21,7 @@ const SignIn: React.FC = () => {
   const router = useRouter();
   const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [googleUserInfo, setGoogleUserInfo] = useState();
   const { createRequest } = useCreateAxios();
   const navigation = useNavigation();
 
@@ -69,17 +71,52 @@ const SignIn: React.FC = () => {
   const handleRegister = () => {
     router.push("/sign-up");
   };
+  useEffect(() => {
+    GoogleSignin.configure();
+  }, []);
+  const loginWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const user: any = await GoogleSignin.signIn();
+      console.log(user.data);
+      console.log(user.data.user.name);
+      try {
+        const response: AxiosResponse<LoginResponse> = await createRequest(
+          "post",
+          "/auth/loginByGoogle",
+          {
+            user_name: user.data.user.email,
+            full_name: user.data.user.name,
+            email: user.data.user.email,
+            password: user.data.user.id,
+          }
+        );
 
+        console.log("Full Response:", response);
+        console.log("Data from Response:", response.data); // Log the specific data part
+
+        const { token, role } = response.data;
+        console.log("role: ", role);
+        getScreenByRole(role);
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("Login failed. Please check your credentials.");
+      }
+      setGoogleUserInfo(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.frame}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("@assets/images/logo.jpeg")} 
+            source={require("@assets/images/logo.jpeg")}
             style={styles.logo}
           />
         </View>
-        
+
         <Text style={styles.title}>Sign In</Text>
 
         <TextInput
@@ -110,13 +147,13 @@ const SignIn: React.FC = () => {
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.googleButton}>
+        <TouchableOpacity onPress={loginWithGoogle} style={styles.googleButton}>
           <Image
             source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" }}
             style={styles.googleIcon}
           />
           <Image
-            source={require("@assets/images/google.png")} 
+            source={require("@assets/images/google.png")}
             style={styles.additionalIcon}
           />
           <Text style={styles.googleButtonText}>Login with Google</Text>
@@ -151,7 +188,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     alignItems: "center",
   },
-   logoContainer: {
+  logoContainer: {
     marginBottom: 20,
     borderRadius: 40, // Half of the logo width and height for circular shape
     overflow: "hidden",
@@ -197,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingVertical: 14,
-    backgroundColor: "white", 
+    backgroundColor: "white",
     borderRadius: 10,
     marginTop: 10,
   },
@@ -217,7 +254,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     flex: 1,
-        marginRight: 60,
+    marginRight: 60,
 
   },
   linkButton: {
