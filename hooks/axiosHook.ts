@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getStore } from "utils/AsyncStore";
 
 const BASE_URL = "http://10.0.2.2:8080/api/v1";
 
@@ -17,7 +18,7 @@ const useCreateAxios = () => {
       const isFormData = data instanceof FormData;
 
       try {
-        const token = await AsyncStorage.getItem("token");
+        const token = await getStore("token");
 
         const response = await axios.request<T>({
           method,

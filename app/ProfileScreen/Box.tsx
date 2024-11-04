@@ -10,6 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import React from "react";
 import { router } from "expo-router";
 import { Colors } from "@constants/Colors";
+import { logout } from "utils/AsyncStore";
 interface Props {
   avatar: string;
   fullName: string;
@@ -58,7 +59,7 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
 
       <View style={{ marginVertical: 10 }}>
         <Button
-          onPress={() => router.push("(customerTabs)/Home")}
+          onPress={() => logout()}
           color={Colors.BURGUNDYRED}
           title="Logout"
         />

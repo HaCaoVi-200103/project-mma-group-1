@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 export const getStore = async (name: string) => {
     try {
@@ -27,4 +28,9 @@ export const setStore = async (key: string, value: string) => {
         console.error(error);
         return false
     }
+}
+
+export const logout = async () => {
+    await removeStore("token")
+    return router.push("(customerTabs)/Home")
 }
