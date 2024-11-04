@@ -30,6 +30,14 @@ export default function AppLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="DetailScreens/AddCake"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DetailScreens/AddTopping"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="DetailScreens/ToppingManagementDetail"
           options={{ headerShown: false }}
         />
@@ -38,4 +46,3 @@ export default function AppLayout() {
     </Provider>
   );
 }
-  

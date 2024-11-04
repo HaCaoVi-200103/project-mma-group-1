@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { SearchBar } from "react-native-elements";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
 
 interface Topping {
   _id: string;
@@ -101,7 +102,9 @@ const StaffToppingManagement: React.FC = () => {
     <View style={styles.header}>
       <View style={styles.titleAndAdd}>
         <Text style={styles.title}>Topping Management</Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push("/DetailScreens/AddTopping")}
+        >
           <Ionicons name="add-circle" size={40} color={Colors.CHOCOLATEBROWN} />
         </TouchableOpacity>
       </View>

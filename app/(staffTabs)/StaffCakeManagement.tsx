@@ -17,6 +17,7 @@ import { SearchBar } from "react-native-elements";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
+import { router } from "expo-router";
 
 interface Cake {
   _id: string;
@@ -149,7 +150,7 @@ const StaffCakeManagement: React.FC = () => {
     <View style={styles.header}>
       <View style={styles.titleAndAdd}>
         <Text style={styles.title}>Cake Management</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/DetailScreens/AddCake")}>
           <Ionicons name="add-circle" size={40} color={Colors.CHOCOLATEBROWN} />
         </TouchableOpacity>
       </View>
