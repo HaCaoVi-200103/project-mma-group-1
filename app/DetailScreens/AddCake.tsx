@@ -4,16 +4,14 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
   Alert,
 } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import axios, { AxiosResponse } from "axios";
 import useCreateAxios from "@hooks/axiosHook";
 import { Colors } from "@constants/Colors";
@@ -23,7 +21,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 interface Cake {
-  _id: string;
   cake_image: string;
   cake_name: string;
   cake_description: string;
@@ -36,10 +33,16 @@ interface Topping {
   topping_name: string;
 }
 
-const CakeDetail: React.FC = () => {
+const AddCake: React.FC = () => {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const [cake, setCake] = useState<Cake | null>(null);
+  const [cake, setCake] = useState<Cake>({
+    cake_image: "",
+    cake_name: "",
+    cake_description: "",
+    cake_type: "",
+    cake_price: 0,
+    cake_quantity: 0,
+  });
   const [thisCakeToppings, setThisCakeToppings] = useState<Topping[]>([]);
   const [allToppings, setAllToppings] = useState<Topping[]>([]);
   const [selectedTopping, setSelectedTopping] = useState<string | null>(null);
@@ -47,31 +50,9 @@ const CakeDetail: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (id) {
-        fetchCakeDetail();
-        fetchAllTopping();
-      }
-    }, [id])
+      fetchAllTopping();
+    }, [])
   );
-
-  const fetchCakeDetail = async () => {
-    try {
-      const response: AxiosResponse<{ cake: Cake; toppings: Topping[] }> =
-        await createRequest("get", `/cakes/${id}`);
-
-      if (response && response.data) {
-        const { cake, toppings } = response.data;
-
-        setCake(cake);
-        if (toppings) setThisCakeToppings(toppings);
-        console.log(toppings, thisCakeToppings);
-      } else {
-        console.error("Invalid data format:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching cake details:", error);
-    }
-  };
 
   const fetchAllTopping = async () => {
     try {
@@ -111,21 +92,20 @@ const CakeDetail: React.FC = () => {
       pickerResult.assets.length > 0
     ) {
       const selectedImage = pickerResult.assets[0];
-      setCake((prevCake) =>
-        prevCake ? { ...prevCake, cake_image: selectedImage.uri } : null
-      );
+      setCake((prevCake) => ({
+        ...prevCake,
+        cake_image: selectedImage.uri,
+      }));
     }
   };
 
   const handleRemoveTopping = (toppingId: string) => {
     setThisCakeToppings((prevToppings) =>
-      prevToppings.filter((topping) => topping?._id !== toppingId)
+      prevToppings.filter((topping) => topping._id !== toppingId)
     );
   };
 
-  const handleUpdate = async () => {
-    if (!cake) return;
-
+  const handleAddCake = async () => {
     try {
       const formData = new FormData();
       formData.append("cake_name", cake.cake_name);
@@ -134,7 +114,7 @@ const CakeDetail: React.FC = () => {
       formData.append("cake_price", String(cake.cake_price));
       formData.append("cake_quantity", String(cake.cake_quantity));
 
-      if (cake.cake_image && typeof cake.cake_image === "string") {
+      if (cake.cake_image) {
         formData.append("file", {
           uri: cake.cake_image,
           name: "cake_image.jpg",
@@ -143,76 +123,37 @@ const CakeDetail: React.FC = () => {
       }
 
       thisCakeToppings.forEach((topping) => {
-        console.log(topping?._id);
-
-        formData.append("toppings", String(topping?._id));
+        formData.append("toppings", topping._id);
       });
 
-      console.log("Check: ", formData);
-
-      await axios.put(`http://10.0.2.2:8080/api/v1/cakes/${id}`, formData, {
+      await axios.post(`http://10.0.2.2:8080/api/v1/cakes`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // await createRequest("put", `/cakes/${id}`, formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-
-      alert("Cake updated successfully!");
+      Alert.alert("Cake added successfully!");
       router.back();
     } catch (error) {
-      console.error("Error updating cake:", error);
+      console.error("Error adding cake:", error);
     }
   };
 
-  const handleDelete = async () => {
-    if (!cake) return;
-
-    Alert.alert(
-      "Delete Confirmation",
-      "Are you sure you want to delete this cake?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            await axios.delete(`http://10.0.2.2:8080/api/v1/cakes/${id}`, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            });
-            router.back();
-          },
-          style: "destructive",
-        },
-      ]
-    );
-  };
-
   const handleChange = (field: keyof Cake, value: string | number) => {
-    setCake((prevCake) => (prevCake ? { ...prevCake, [field]: value } : null));
+    setCake((prevCake) => ({ ...prevCake, [field]: value }));
   };
 
   const handleAddTopping = () => {
     if (selectedTopping) {
       const toppingToAdd = allToppings.find(
-        (t) => t?.topping_name === selectedTopping
+        (t) => t.topping_name === selectedTopping
       );
       if (toppingToAdd && !thisCakeToppings.includes(toppingToAdd)) {
         setThisCakeToppings((prev) => [...prev, toppingToAdd]);
-        setSelectedTopping(null); // Reset selected topping after adding
+        setSelectedTopping(null);
       }
     }
   };
-
-  if (!cake) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -221,7 +162,11 @@ const CakeDetail: React.FC = () => {
           <Ionicons name="arrow-back-outline" size={30} color="black" />
         </TouchableOpacity>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: cake.cake_image }} style={styles.image} />
+          {cake.cake_image ? (
+            <Image source={{ uri: cake.cake_image }} style={styles.image} />
+          ) : (
+            <View style={styles.nullImage}></View>
+          )}
           <TouchableOpacity
             style={styles.uploadButton}
             onPress={handleImageUpload}
@@ -367,23 +312,22 @@ const CakeDetail: React.FC = () => {
             />
           </TouchableOpacity>
         </View>
-
-        {/* <Button title="Update Cake" onPress={handleUpdate} /> */}
-        <View style={styles.buttons}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity
-            onPress={handleUpdate}
-            style={styles.editToppingContainer}
+            onPress={handleAddCake}
+            style={styles.addButtonContainer}
           >
-            <Text>Edit Cake</Text>
-            <FontAwesome name="edit" size={30} color={Colors.CHOCOLATEBROWN} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleDelete}
-            style={styles.deleteToppingContainer}
-          >
-            <Text>Delete Cake</Text>
-            <Ionicons name="trash" size={30} color={Colors.CHOCOLATEBROWN} />
+            <Text>Add Cake</Text>
+            <FontAwesome
+              name="plus-circle"
+              size={30}
+              color={Colors.CHOCOLATEBROWN}
+            />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -408,6 +352,12 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 20,
     resizeMode: "cover",
+  },
+  nullImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+    backgroundColor: Colors.FOGGYGRAY,
   },
   uploadButton: {
     position: "absolute",
@@ -560,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "30%",
   },
-  editToppingContainer: {
+  addButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -595,4 +545,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CakeDetail;
+export default AddCake;

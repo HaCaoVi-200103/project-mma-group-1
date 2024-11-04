@@ -4,30 +4,24 @@ import {
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import axios, { AxiosResponse } from "axios";
-import useCreateAxios from "@hooks/axiosHook";
+import { useRouter } from "expo-router";
+import axios from "axios";
 import { Colors } from "@constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
-import { Picker } from "@react-native-picker/picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 interface Cake {
-  _id: string;
   cake_image: string;
   cake_name: string;
   cake_description: string;
-  cake_type: string;
   cake_price: number;
   cake_quantity: number;
 }
@@ -36,60 +30,15 @@ interface Topping {
   topping_name: string;
 }
 
-const CakeDetail: React.FC = () => {
+const AddTopping: React.FC = () => {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const [cake, setCake] = useState<Cake | null>(null);
-  const [thisCakeToppings, setThisCakeToppings] = useState<Topping[]>([]);
-  const [allToppings, setAllToppings] = useState<Topping[]>([]);
-  const [selectedTopping, setSelectedTopping] = useState<string | null>(null);
-  const { createRequest } = useCreateAxios();
-
-  useFocusEffect(
-    useCallback(() => {
-      if (id) {
-        fetchCakeDetail();
-        fetchAllTopping();
-      }
-    }, [id])
-  );
-
-  const fetchCakeDetail = async () => {
-    try {
-      const response: AxiosResponse<{ cake: Cake; toppings: Topping[] }> =
-        await createRequest("get", `/cakes/${id}`);
-
-      if (response && response.data) {
-        const { cake, toppings } = response.data;
-
-        setCake(cake);
-        if (toppings) setThisCakeToppings(toppings);
-        console.log(toppings, thisCakeToppings);
-      } else {
-        console.error("Invalid data format:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching cake details:", error);
-    }
-  };
-
-  const fetchAllTopping = async () => {
-    try {
-      const response: AxiosResponse<Topping[]> = await createRequest(
-        "post",
-        "/toppings/pagination"
-      );
-
-      if (response && response.data) {
-        const toppings = response.data;
-        setAllToppings(toppings);
-      } else {
-        console.error("Invalid data format:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching toppings:", error);
-    }
-  };
+  const [cake, setCake] = useState<Cake>({
+    cake_image: "",
+    cake_name: "",
+    cake_description: "",
+    cake_price: 0,
+    cake_quantity: 0,
+  });
 
   const handleImageUpload = async () => {
     const permissionResult =
@@ -111,108 +60,45 @@ const CakeDetail: React.FC = () => {
       pickerResult.assets.length > 0
     ) {
       const selectedImage = pickerResult.assets[0];
-      setCake((prevCake) =>
-        prevCake ? { ...prevCake, cake_image: selectedImage.uri } : null
-      );
+      setCake((prevCake) => ({
+        ...prevCake,
+        cake_image: selectedImage.uri,
+      }));
     }
   };
 
-  const handleRemoveTopping = (toppingId: string) => {
-    setThisCakeToppings((prevToppings) =>
-      prevToppings.filter((topping) => topping?._id !== toppingId)
-    );
-  };
-
-  const handleUpdate = async () => {
-    if (!cake) return;
-
+  const handleAddCake = async () => {
     try {
       const formData = new FormData();
-      formData.append("cake_name", cake.cake_name);
-      formData.append("cake_description", cake.cake_description);
-      formData.append("cake_type", cake.cake_type);
-      formData.append("cake_price", String(cake.cake_price));
-      formData.append("cake_quantity", String(cake.cake_quantity));
+      formData.append("topping_name", cake.cake_name);
+      formData.append("topping_description", cake.cake_description);
+      formData.append("topping_price", String(cake.cake_price));
+      formData.append("topping_quantity", String(cake.cake_quantity));
 
-      if (cake.cake_image && typeof cake.cake_image === "string") {
+      if (cake.cake_image) {
         formData.append("file", {
           uri: cake.cake_image,
-          name: "cake_image.jpg",
+          name: "topping_image.jpg",
           type: "image/jpeg",
         });
       }
 
-      thisCakeToppings.forEach((topping) => {
-        console.log(topping?._id);
-
-        formData.append("toppings", String(topping?._id));
-      });
-
-      console.log("Check: ", formData);
-
-      await axios.put(`http://10.0.2.2:8080/api/v1/cakes/${id}`, formData, {
+      await axios.post(`http://10.0.2.2:8080/api/v1/toppings`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // await createRequest("put", `/cakes/${id}`, formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-
-      alert("Cake updated successfully!");
+      Alert.alert("Topping added successfully!");
       router.back();
     } catch (error) {
-      console.error("Error updating cake:", error);
+      console.error("Error adding topping:", error);
     }
-  };
-
-  const handleDelete = async () => {
-    if (!cake) return;
-
-    Alert.alert(
-      "Delete Confirmation",
-      "Are you sure you want to delete this cake?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            await axios.delete(`http://10.0.2.2:8080/api/v1/cakes/${id}`, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            });
-            router.back();
-          },
-          style: "destructive",
-        },
-      ]
-    );
   };
 
   const handleChange = (field: keyof Cake, value: string | number) => {
-    setCake((prevCake) => (prevCake ? { ...prevCake, [field]: value } : null));
+    setCake((prevCake) => ({ ...prevCake, [field]: value }));
   };
-
-  const handleAddTopping = () => {
-    if (selectedTopping) {
-      const toppingToAdd = allToppings.find(
-        (t) => t?.topping_name === selectedTopping
-      );
-      if (toppingToAdd && !thisCakeToppings.includes(toppingToAdd)) {
-        setThisCakeToppings((prev) => [...prev, toppingToAdd]);
-        setSelectedTopping(null); // Reset selected topping after adding
-      }
-    }
-  };
-
-  if (!cake) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -221,7 +107,11 @@ const CakeDetail: React.FC = () => {
           <Ionicons name="arrow-back-outline" size={30} color="black" />
         </TouchableOpacity>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: cake.cake_image }} style={styles.image} />
+          {cake.cake_image ? (
+            <Image source={{ uri: cake.cake_image }} style={styles.image} />
+          ) : (
+            <View style={styles.nullImage}></View>
+          )}
           <TouchableOpacity
             style={styles.uploadButton}
             onPress={handleImageUpload}
@@ -236,19 +126,13 @@ const CakeDetail: React.FC = () => {
                 style={styles.inputName}
                 value={cake.cake_name}
                 onChangeText={(text) => handleChange("cake_name", text)}
-                placeholder="Cake Name"
+                placeholder="Topping Name"
               />
               <View style={styles.titleNameContainer}>
                 <Text style={styles.titleName}>Name</Text>
               </View>
             </View>
             <View>
-              <TextInput
-                style={styles.inputType}
-                value={cake.cake_type}
-                onChangeText={(text) => handleChange("cake_type", text)}
-                placeholder="Cake Type"
-              />
               <View style={styles.titleNameContainer}>
                 <Text style={styles.titleName}>Type</Text>
               </View>
@@ -261,7 +145,7 @@ const CakeDetail: React.FC = () => {
               multiline
               numberOfLines={4}
               onChangeText={(text) => handleChange("cake_description", text)}
-              placeholder="Cake Description"
+              placeholder="Topping Description"
             />
             <View style={styles.titleDescriptionContainer}>
               <Text style={styles.titleName}>Description</Text>
@@ -311,79 +195,22 @@ const CakeDetail: React.FC = () => {
           </View>
         </View>
 
-        <View style={styles.thisToppingContainer}>
-          <Text style={styles.titleName}>Current Toppings:</Text>
-          <View style={styles.toppingItems}>
-            {thisCakeToppings[0] && thisCakeToppings?.length > 0 ? (
-              thisCakeToppings.map((topping) => (
-                <View key={topping?._id} style={styles.toppingItemContainer}>
-                  <Text style={styles.toppingItem}>
-                    {topping?.topping_name}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => handleRemoveTopping(topping?._id)}
-                    style={styles.removeToppingButton}
-                  >
-                    <Text style={styles.removeToppingText}>x</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
-            ) : (
-              <Text>No toppings added.</Text>
-            )}
-          </View>
-        </View>
-
-        <View style={styles.pickerToppingContainer}>
-          <Picker
-            selectedValue={selectedTopping}
-            onValueChange={(itemValue) => setSelectedTopping(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Select a topping" value={null} />
-            {allToppings
-              .filter(
-                (topping) =>
-                  !thisCakeToppings.find((t) => t?._id === topping?._id)
-              ) // Filter out existing toppings
-              .map((topping) => (
-                <Picker.Item
-                  key={topping?._id}
-                  label={topping?.topping_name}
-                  value={topping?.topping_name}
-                />
-              ))}
-          </Picker>
-          {/* <Button title="Add Topping" onPress={handleAddTopping} /> */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
           <TouchableOpacity
-            onPress={handleAddTopping}
-            style={styles.addToppingContainer}
+            onPress={handleAddCake}
+            style={styles.addButtonContainer}
           >
             <Text>Add Topping</Text>
-            <Ionicons
-              name="add-circle-sharp"
-              size={24}
-              color={Colors.FOGGYGRAY}
+            <FontAwesome
+              name="plus-circle"
+              size={30}
+              color={Colors.CHOCOLATEBROWN}
             />
-          </TouchableOpacity>
-        </View>
-
-        {/* <Button title="Update Cake" onPress={handleUpdate} /> */}
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            onPress={handleUpdate}
-            style={styles.editToppingContainer}
-          >
-            <Text>Edit Cake</Text>
-            <FontAwesome name="edit" size={30} color={Colors.CHOCOLATEBROWN} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleDelete}
-            style={styles.deleteToppingContainer}
-          >
-            <Text>Delete Cake</Text>
-            <Ionicons name="trash" size={30} color={Colors.CHOCOLATEBROWN} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -408,6 +235,12 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 20,
     resizeMode: "cover",
+  },
+  nullImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+    backgroundColor: Colors.FOGGYGRAY,
   },
   uploadButton: {
     position: "absolute",
@@ -459,7 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   inputName: {
-    width: 200,
+    width: 370,
     borderColor: Colors.SANDSTONE,
     borderWidth: 1,
     borderRadius: 10,
@@ -560,7 +393,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "30%",
   },
-  editToppingContainer: {
+  addButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -595,4 +428,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CakeDetail;
+export default AddTopping;
