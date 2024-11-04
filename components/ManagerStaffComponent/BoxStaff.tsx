@@ -2,7 +2,6 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Colors } from "@constants/Colors";
-import ModalUpdate from "./ModalUpdate";
 import { router } from "expo-router";
 
 interface Props {
