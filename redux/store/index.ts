@@ -1,10 +1,12 @@
+import profileSlice from '@redux/features/profile'
 import counterSlice from '@redux/tests/counterSlice'
 import { configureStore } from '@reduxjs/toolkit'
 // ...
 
 export const store = configureStore({
     reducer: {
-        counter: counterSlice
+        counter: counterSlice,
+        profile: profileSlice
     },
 })
 

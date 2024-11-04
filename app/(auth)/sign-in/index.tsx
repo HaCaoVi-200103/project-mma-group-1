@@ -8,8 +8,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { setStore } from "utils/AsyncStore";
+import { useAppDispatch } from "@hooks/reduxHooks";
+import { addProfile } from "@redux/features/profile";
 
 // Define the expected structure of the API response
 interface LoginResponse {
@@ -24,6 +27,8 @@ const SignIn: React.FC = () => {
   const [googleUserInfo, setGoogleUserInfo] = useState();
   const { createRequest } = useCreateAxios();
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -37,27 +42,41 @@ const SignIn: React.FC = () => {
     }
 
     try {
-      console.log("User Name:", user_name, " Password:", password);
-
       const response: AxiosResponse<LoginResponse> = await createRequest(
         "post",
         "/auth/login",
         { user_name, password }
       );
 
-      console.log("Full Response:", response); // Log the full response
-      console.log("Data from Response:", response.data); // Log the specific data part
-
       const { token, role } = response.data;
-      console.log("role: ", role);
-      getScreenByRole(role);
+
+      if (token) {
+        await setStore("token", token);
+      }
+      getScreenByRole(role, token);
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please check your credentials.");
     }
   };
 
-  const getScreenByRole = (role: string) => {
+  const addProfileRedux = async (token: string) => {
+    try {
+      const res = await axios.get("http://10.0.2.2:8080/api/v1/auth/user", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      if (res.status === 200) {
+        dispatch(addProfile(res.data));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getScreenByRole = (role: string, token: string) => {
+    addProfileRedux(token);
     switch (role.toLowerCase()) {
       case "customer":
         router.push("/Home");
@@ -84,8 +103,6 @@ const SignIn: React.FC = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const user: any = await GoogleSignin.signIn();
-      console.log(user.data);
-      console.log(user.data.user.name);
       try {
         const response: AxiosResponse<LoginResponse> = await createRequest(
           "post",
@@ -94,16 +111,11 @@ const SignIn: React.FC = () => {
             user_name: user.data.user.email,
             full_name: user.data.user.name,
             email: user.data.user.email,
-            password:user.data.user.id,
+            password: user.data.user.id,
           }
         );
-
-        console.log("Full Response:", response);
-        console.log("Data from Response:", response.data); // Log the specific data part
-
         const { token, role } = response.data;
-        console.log("role: ", role);
-        getScreenByRole(role);
+        getScreenByRole(role, token);
       } catch (error) {
         console.error("Login error:", error);
         alert("Login failed. Please check your credentials.");
