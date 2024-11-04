@@ -4,7 +4,7 @@ import React from "react";
 const Order = () => {
   return (
     <View>
-      <Text>Order</Text>
+      <Text>Order ádsaasdsa</Text>
     </View>
   );
 };
