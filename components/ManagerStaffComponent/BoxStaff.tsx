@@ -18,15 +18,16 @@ const BoxStaff: React.FC<Props> = ({ avatar, email, name, phone, staffId }) => {
     <View style={styles.parent}>
       <View style={styles.container}>
         <View style={styles.boxImage}>
-          <Image
-            style={styles.image}
-            source={{
-              uri:
-                avatar === ""
-                  ? "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
-                  : avatar,
-            }}
-          />
+
+            <Image
+              style={styles.image}
+              source={{
+                uri:
+                  avatar === ""
+                    ? "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
+                    : avatar,
+              }}
+            />
         </View>
         <View>
           <Text style={styles.name}>{name}</Text>
