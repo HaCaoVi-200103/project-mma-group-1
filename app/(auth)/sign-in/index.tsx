@@ -5,10 +5,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import { AxiosResponse } from "axios";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 // Define the expected structure of the API response
 interface LoginResponse {
@@ -20,6 +21,7 @@ const SignIn: React.FC = () => {
   const router = useRouter();
   const [user_name, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [googleUserInfo, setGoogleUserInfo] = useState();
   const { createRequest } = useCreateAxios();
   const navigation = useNavigation();
   React.useLayoutEffect(() => {
@@ -75,7 +77,42 @@ const SignIn: React.FC = () => {
   const handleRegister = () => {
     router.push("/sign-up"); // Navigate to the register page
   };
+  useEffect(() => {
+    GoogleSignin.configure();
+  }, []);
+  const loginWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const user: any = await GoogleSignin.signIn();
+      console.log(user.data);
+      console.log(user.data.user.name);
+      try {
+        const response: AxiosResponse<LoginResponse> = await createRequest(
+          "post",
+          "/auth/loginByGoogle",
+          {
+            user_name: user.data.user.email,
+            full_name: user.data.user.name,
+            email: user.data.user.email,
+            password:user.data.user.id,
+          }
+        );
 
+        console.log("Full Response:", response);
+        console.log("Data from Response:", response.data); // Log the specific data part
+
+        const { token, role } = response.data;
+        console.log("role: ", role);
+        getScreenByRole(role);
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("Login failed. Please check your credentials.");
+      }
+      setGoogleUserInfo(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.frame}>
@@ -109,7 +146,10 @@ const SignIn: React.FC = () => {
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.googleButton}>
+        <TouchableOpacity
+          onPress={() => loginWithGoogle()}
+          style={styles.googleButton}
+        >
           <Text style={styles.googleButtonText}>Login with Google</Text>
         </TouchableOpacity>
 
