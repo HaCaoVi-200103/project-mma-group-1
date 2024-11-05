@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Animated, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 import { BarChart, PieChart } from "react-native-chart-kit";
@@ -68,7 +75,7 @@ const CakeStatistic: React.FC = () => {
     labels: salesData.map((item) => item.cake_name.split(" ")[0]),
     datasets: [
       {
-        data: salesData.map((item) => item.revenue),
+        data: salesData.map((item) => item.revenue.toFixed(2)),
         colors: colors.map(
           (color) =>
             (opacity = 1) =>
@@ -149,36 +156,44 @@ const CakeStatistic: React.FC = () => {
               ))}
             </View>
           </View>
-          <View style={styles.barChartContainer}>
-            <Animated.View style={animatedStyle}>
-              <BarChart
-                withCustomBarColorFromData
-                flatColor
-                data={barChartData}
-                yAxisLabel="$"
-                width={Dimensions.get("window").width - 50}
-                height={250}
-                chartConfig={{
-                  backgroundColor: Colors.BRICKRED,
-                  backgroundGradientFrom: Colors.IVORYWHITE,
-                  backgroundGradientTo: Colors.FOGGYGRAY,
-                  color: (opacity = 1, index) => `rgba(0, 0, 0, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                  style: {
-                    borderRadius: 16,
-                  },
-                  // propsForLabels: {
-                  //   fontSize: 10, // Giảm kích thước chữ
-                  // },
-                  paddingRight: 30,
-                }}
-                showValuesOnTopOfBars
-                yAxisSuffix=""
-                fromZero
-                // verticalLabelRotation={8} // Xoay nhãn
-              />
-            </Animated.View>
-          </View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+            style={{ width: 370, margin: "auto" }}
+          >
+            <View style={styles.barChartContainer}>
+              <Animated.View style={animatedStyle}>
+                <BarChart
+                  withCustomBarColorFromData
+                  flatColor
+                  data={barChartData}
+                  yAxisLabel="$"
+                  width={
+                    (Dimensions.get("window").width / 6) * salesData.length
+                  }
+                  height={250}
+                  chartConfig={{
+                    backgroundColor: Colors.BRICKRED,
+                    backgroundGradientFrom: Colors.IVORYWHITE,
+                    backgroundGradientTo: Colors.FOGGYGRAY,
+                    color: (opacity = 1, index) => `rgba(0, 0, 0, ${opacity})`,
+                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    style: {
+                      borderRadius: 16,
+                    },
+                    // propsForLabels: {
+                    //   fontSize: 10, // Giảm kích thước chữ
+                    // },
+                    paddingRight: 30,
+                  }}
+                  showValuesOnTopOfBars
+                  yAxisSuffix=""
+                  fromZero
+                  // verticalLabelRotation={8} // Xoay nhãn
+                />
+              </Animated.View>
+            </View>
+          </ScrollView>
         </View>
       ) : (
         <Text style={styles.noDataText}>None data for this month!!!</Text>

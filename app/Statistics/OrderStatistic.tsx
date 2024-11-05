@@ -117,6 +117,7 @@ export default function OrderStatistic() {
   useEffect(() => {
     // console.log("selectedWeek",selectedWeek);
   }, [selectedYear]);
+
   const generateExcel = () => {
     let wb = XLSX.utils.book_new();
     const excelData = [["Date", "Order Count", "Total Price"]];

@@ -6,23 +6,30 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useCreateAxios from "../../hooks/axiosHook";
+import { useRouter } from "expo-router";
+import { getStore } from "utils/AsyncStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Cake {
   cake_name: string;
   cake_price: number;
   cake_image: string;
+  _id: string;
+  quantity?: number;
 }
 
 const ITEMS_PER_PAGE = 8;
 
 const AllCake: React.FC = () => {
   const [cakes, setCakes] = useState<Cake[]>([]);
-  const [cart, setCart] = useState<Cake[]>([]); // Giỏ hàng
+  const [cart, setCart] = useState<Cake[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { createRequest } = useCreateAxios();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCakes = async () => {
@@ -33,11 +40,39 @@ const AllCake: React.FC = () => {
         );
         setCakes(response.data);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu loại bánh:", error);
+        return;
       }
     };
     fetchCakes();
+    const fetchCart = async () => {
+      const currentCart = await getStore("user_cart");
+      setCart(currentCart);
+    };
+    fetchCart();
   }, [createRequest]);
+
+  const addToCartS = async (cake: Cake) => {
+    try {
+      const storedCart = await AsyncStorage.getItem("cart");
+      const currentCart = storedCart ? JSON.parse(storedCart) : [];
+      const existingItemIndex = currentCart.findIndex(
+        (item: Cake) => item._id === cake._id
+      );
+      if (existingItemIndex !== -1) {
+        currentCart[existingItemIndex].quantity =
+          (currentCart[existingItemIndex].quantity || 0) + 1;
+      } else {
+        currentCart.push({ ...cake, quantity: 1 });
+      }
+      await AsyncStorage.setItem("cart", JSON.stringify(currentCart));
+      setCart(currentCart);
+    } catch (error) {
+      return Alert.alert(
+        "Error",
+        "There was a problem adding the item to the cart."
+      );
+    }
+  };
 
   const currentPageData = cakes.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -45,23 +80,25 @@ const AllCake: React.FC = () => {
   );
 
   const renderCake = ({ item }: { item: Cake }) => (
-    <View style={styles.cakeCard}>
+    <TouchableOpacity
+      style={styles.cakeCard}
+      onPress={() =>
+        router.push({
+          pathname: `/DetailScreens/CakeDetails`,
+          params: { cakeId: item._id },
+        })
+      }
+    >
       <Image source={{ uri: item.cake_image }} style={styles.cakeImage} />
       <Text style={styles.cakeName}>{item.cake_name}</Text>
       <Text style={styles.cakePrice}>${item.cake_price}</Text>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => addToCart(item)}
-      >
-        <Text style={styles.addButtonText}>+</Text>
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.addButtonText} onPress={() => addToCartS(item)}>
+          +
+        </Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
-
-  // Thêm mục vào giỏ hàng
-  const addToCart = (cake: Cake) => {
-    setCart([...cart, cake]);
-  };
 
   const handleBack = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -75,9 +112,12 @@ const AllCake: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.heading}>All Cakes</Text>
-        <TouchableOpacity style={styles.cartIcon}>
-          <Ionicons name="cart-outline" size={28} color="#FF6347" />
+        <Text style={styles.heading}>All cakes</Text>
+        <TouchableOpacity
+          style={styles.cartIcon}
+          onPress={() => router.push("/CustomerScreens/CartScreen")}
+        >
+          <Ionicons name="cart-outline" size={35} color="#FF6347" />
           {cart.length > 0 && (
             <View style={styles.cartBadge}>
               <Text style={styles.cartBadgeText}>{cart.length}</Text>
@@ -128,6 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     paddingTop: 10,
+    marginTop: 10,
   },
   header: {
     flexDirection: "row",
@@ -191,7 +232,7 @@ const styles = StyleSheet.create({
     color: "#FF6347",
     fontWeight: "bold",
     marginTop: 5,
-    marginRight: 70
+    marginRight: 70,
   },
   addButton: {
     backgroundColor: "#FF6347",

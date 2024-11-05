@@ -13,10 +13,27 @@ import {
 import CakeBestSellingScreen from "../CustomerScreens/CakeSale";
 import CakeAllScreen from "../CustomerScreens/CakeSixScreen";
 import { router } from "expo-router";
+import { useAppSelector } from "@hooks/reduxHooks";
 
 const Home = () => {
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  console.log("PROFILE :", profile.user_avatar);
+
   const data = [
-    { id: "1", component: <GreetingSection /> },
+    {
+      id: "1",
+      component: (
+        <GreetingSection
+          avatar={
+            profile.user_avatar
+              ? profile.user_avatar
+              : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
+          }
+          id={profile._id}
+          flat={profile._id ? true : false}
+        />
+      ),
+    },
     { id: "2", component: <SearchSection /> },
     { id: "3", component: <OfferSection /> },
     { id: "4", component: <CakeBestSellingScreen /> },
@@ -34,14 +51,40 @@ const Home = () => {
   );
 };
 
-const GreetingSection = () => (
-  <View>
+const GreetingSection = ({ flat, id, avatar }) => (
+  <View style={{ marginTop: 20 }}>
     <Text style={styles.greeting}>Hi there!</Text>
     <Text style={styles.subtitle}>What are you looking for today?</Text>
     <View>
-      <TouchableOpacity onPress={() => router.push("(auth)/sign-in")}>
-        <Text style={styles.loginLink}>Login</Text>
-      </TouchableOpacity>
+      {!flat ? (
+        <TouchableOpacity onPress={() => router.push("(auth)/sign-in")}>
+          <Text style={styles.loginLink}>Login</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/ProfileScreen/ProfileCustomizeCustomer",
+              params: { id: id },
+            })
+          }
+        >
+          <Image
+            style={[
+              {
+                height: 50,
+                width: 50,
+                borderRadius: 100,
+                marginBottom: 10,
+              },
+              styles.loginLink,
+            ]}
+            source={{
+              uri: avatar,
+            }}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   </View>
 );
@@ -65,7 +108,11 @@ const SearchSection = () => (
 const OfferSection = () => (
   <View style={styles.offerContainer}>
     <Image
-      source={require("../../assets/images/cakeSample.jpg")}
+      source={
+        require("../../assets/images/cakeSample.jpg")
+          ? require("../../assets/images/cakeSample.jpg")
+          : ""
+      }
       style={styles.offerImage}
     />
     <View style={styles.offerTextContainer}>

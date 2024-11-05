@@ -3,11 +3,11 @@ import React from "react";
 import { router, useNavigation } from "expo-router";
 import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import { Colors } from "@constants/Colors";
-const id = "6724a907f14e21cced1f60af";
+import { useAppSelector } from "@hooks/reduxHooks";
 
 const Setting = () => {
   const navigation = useNavigation();
-
+  const profile: any = useAppSelector((state) => state.profile.profile);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -21,7 +21,7 @@ const Setting = () => {
           onPress={() =>
             router.push({
               pathname: "/StaffScreens/ProfileCustomizeStaff",
-              params: { staffId: id },
+              params: { staffId: profile._id },
             })
           }
           color={Colors.BURGUNDYRED}

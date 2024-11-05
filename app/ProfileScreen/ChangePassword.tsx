@@ -7,9 +7,12 @@ import { Colors } from "@constants/Colors";
 import { router } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import axios from "axios";
-const id = "6720a5a2588e2bd477bfd1a3";
+import { useAppSelector } from "@hooks/reduxHooks";
+// const id = "6720a5a2588e2bd477bfd1a3";
 
 const ChangePassword = () => {
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  const id = profile._id;
   const navigation = useNavigation();
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
