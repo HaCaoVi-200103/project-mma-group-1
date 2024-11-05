@@ -17,7 +17,6 @@ import { useAppSelector } from "@hooks/reduxHooks";
 
 const Home = () => {
   const profile: any = useAppSelector((state) => state.profile.profile);
-  console.log("PROFILE :", profile.user_avatar);
 
   const data = [
     {

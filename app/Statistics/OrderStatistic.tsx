@@ -39,10 +39,7 @@ export default function OrderStatistic() {
             setSelectedYear(firstEntry.year);
             setSelectedWeek(firstEntry.week);
           }
-          console.log("Available Weeks:", response.data);
-        } catch (error: any) {
-          console.log(error);
-        }
+        } catch (error: any) {}
       };
 
       fetchWeekAvailable();
@@ -65,8 +62,6 @@ export default function OrderStatistic() {
   useEffect(() => {
     if (selectedWeek) {
       const fetchOrderByWeek = async () => {
-        console.log(selectedWeek);
-        console.log(selectedYear);
         try {
           let response: any = await createRequest(
             "post",
@@ -77,7 +72,6 @@ export default function OrderStatistic() {
             }
           );
           setDataChart(response.data);
-          console.log("Order:", response.data);
           let data: any = {
             labels: Object.keys(response.data).map((date) => {
               const parts = date.split("-");

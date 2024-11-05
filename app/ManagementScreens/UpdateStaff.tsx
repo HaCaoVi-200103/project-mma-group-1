@@ -120,7 +120,6 @@ const UpdateStaff = () => {
         name: "avatar.jpg",
         type: "image/jpeg",
       });
-      console.log("form data: ", formData);
       //   const res = await createRequest("put", `/staff/${staffId}`, formData, {
       //     headers: { "Content-Type": "multipart/form-data" },
       //   });

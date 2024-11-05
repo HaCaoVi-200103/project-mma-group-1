@@ -52,12 +52,9 @@ const ToppingDetail: React.FC = () => {
       );
 
       if (response && response.data) {
-        console.log("data: ", response.data);
-
         const topping = response.data;
 
         setTopping(topping);
-        console.log(topping);
       } else {
         console.error("Invalid data format:", response.data);
       }
@@ -111,8 +108,6 @@ const ToppingDetail: React.FC = () => {
           type: "image/jpeg",
         });
       }
-
-      console.log("Check: ", formData);
 
       await axios.put(`http://10.0.2.2:8080/api/v1/toppings/${id}`, formData, {
         headers: {

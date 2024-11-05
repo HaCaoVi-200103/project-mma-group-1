@@ -12,7 +12,7 @@ import { router } from "expo-router";
 import { Colors } from "@constants/Colors";
 import { logout } from "utils/AsyncStore";
 import { addProfile } from "@redux/features/profile";
-import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { useAppSelector } from "@hooks/reduxHooks";
 interface Props {
   avatar: string;
   fullName: string;
@@ -20,13 +20,11 @@ interface Props {
 }
 // const id = "6720a5a2588e2bd477bfd1a3";
 const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
-  const dispatch = useAppDispatch();
   const profile: any = useAppSelector((state) => state.profile.profile);
   const id = profile._id;
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView>
       <TouchableOpacity
-        style={{ flex: 1 }}
         onPress={() =>
           router.push({
             pathname: "/ProfileScreen/ProfileCustomizeCustomer",
@@ -55,23 +53,12 @@ const BoxProfile: React.FC<Props> = ({ avatar, email, fullName }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => router.push("ProfileScreen/Setting")}
+          onPress={() => router.push("/ProfileScreen/Setting")}
           style={{ position: "absolute", right: 10, top: 25 }}
         >
           <Ionicons name="settings" size={30} color="grey" />
         </TouchableOpacity>
       </TouchableOpacity>
-
-      <View style={{ marginVertical: 10 }}>
-        <Button
-          onPress={() => {
-            logout();
-            dispatch(addProfile({}));
-          }}
-          color={Colors.BURGUNDYRED}
-          title="Logout"
-        />
-      </View>
     </SafeAreaView>
   );
 };

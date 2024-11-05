@@ -30,7 +30,6 @@ const StaffOrderManagement = () => {
       try {
         let response: any;
         if (!isSearch && wasPaidFilter == "All" && statusFilter == "All") {
-          console.log("bb");
           const start = numberOrderPage * pageIndex + 1;
           const end = numberOrderPage * (pageIndex + 1);
           if (orderFilter === "Confirm") {
@@ -45,7 +44,6 @@ const StaffOrderManagement = () => {
             });
           }
         } else {
-          console.log("aa");
           const start = numberOrderPage * pageIndex + 1;
           const end = numberOrderPage * (pageIndex + 1);
           if (orderFilter === "Confirm") {
@@ -79,7 +77,6 @@ const StaffOrderManagement = () => {
           }
         }
         setOrder(response.data.orders);
-        console.log(response.data);
         setNumberPage(Math.ceil(response.data.totalCount / numberOrderPage));
       } catch (error) {
         console.error("Error fetching orders:", error);

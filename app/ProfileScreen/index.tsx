@@ -1,13 +1,17 @@
-import { SafeAreaView } from "react-native";
+import { Button, SafeAreaView, View } from "react-native";
 import React, { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "expo-router";
 import useCreateAxios from "@hooks/axiosHook";
 import BoxProfile from "./Box";
-import { useAppSelector } from "@hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { logout } from "utils/AsyncStore";
+import { addProfile } from "@redux/features/profile";
+import { Colors } from "@constants/Colors";
 
 const ProfileScreen = () => {
   const profile: any = useAppSelector((state) => state.profile.profile);
   const id = profile._id;
+  const dispatch = useAppDispatch();
 
   const navigation = useNavigation();
   const { createRequest } = useCreateAxios();
@@ -34,16 +38,35 @@ const ProfileScreen = () => {
     });
   }, [navigation]);
   return (
-    <SafeAreaView style={{ flex: 1, paddingTop: 50 }}>
-      <BoxProfile
-        avatar={
-          data && data.user_avatar !== ""
-            ? data.user_avatar
-            : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
-        }
-        email={data ? data.email : ""}
-        fullName={data ? data.full_name : ""}
-      />
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: 50,
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <View>
+        <BoxProfile
+          avatar={
+            data && data.user_avatar !== ""
+              ? data.user_avatar
+              : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
+          }
+          email={data ? data.email : ""}
+          fullName={data ? data.full_name : ""}
+        />
+      </View>
+      <View style={{ marginVertical: 10 }}>
+        <Button
+          onPress={() => {
+            logout();
+            dispatch(addProfile({}));
+          }}
+          color={Colors.BURGUNDYRED}
+          title="Logout"
+        />
+      </View>
     </SafeAreaView>
   );
 };

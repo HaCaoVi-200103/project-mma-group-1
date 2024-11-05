@@ -29,7 +29,6 @@ export default function OrderDetail() {
   const fetchOrder = async () => {
     try {
       const respone: any = await createRequest("get", "/orders/" + orderId, {});
-      console.log(respone.data);
       setData(respone.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -43,7 +42,6 @@ export default function OrderDetail() {
       const respone: any = await createRequest("put", "/orders/wasPaidOrder/", {
         order_id: orderId,
       });
-      console.log(respone.data);
       Alert.alert("Update Succesfully", "Update was paid successfully!");
       fetchOrder();
     } catch (error) {
@@ -56,7 +54,6 @@ export default function OrderDetail() {
         order_id: orderId,
         status: "Done",
       });
-      console.log(respone.data);
       Alert.alert("Update Succesfully", "Update Status:Done successfully!");
       fetchOrder();
     } catch (error) {
@@ -81,7 +78,6 @@ export default function OrderDetail() {
           status: "Shipping",
         }
       );
-      console.log(changeStatus_respone.data);
       Alert.alert("Accpet Succesfully", "Accept Order successfully!");
       fetchOrder();
     } catch (error) {
@@ -104,7 +100,7 @@ export default function OrderDetail() {
         <View style={styles.titleContainer}>
           <Ionicons
             name="arrow-back"
-            onPress={() => router.back()}
+            onPress={() => router.push("/(managerTabs)/Managements")}
             size={28}
             color={Colors.CHOCOLATEBROWN}
           />
