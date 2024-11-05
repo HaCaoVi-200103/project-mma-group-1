@@ -19,6 +19,8 @@ import { addProfile } from "@redux/features/profile";
 interface LoginResponse {
   token: string;
   role: string;
+  statusCode:number;
+  message:string;
 }
 
 const SignIn: React.FC = () => {
@@ -29,7 +31,12 @@ const SignIn: React.FC = () => {
   const { createRequest } = useCreateAxios();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-
+  React.useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "1057690917505-92fek090ondepmsqq9n39h22bk6fbm72.apps.googleusercontent.com",
+    });
+  }, []);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -50,8 +57,8 @@ const SignIn: React.FC = () => {
       );
 
       const { token, role } = response.data;
-      if (response.status === 404) {
-        return Alert.alert("Login failed. Please check your credentials.");
+      if (response.data.statusCode === 404) {
+        return Alert.alert(response.data.message,response.data.message);
       }
       if (token) {
         await setStore("token", token);
@@ -66,6 +73,7 @@ const SignIn: React.FC = () => {
   const addProfileRedux = async (role: string) => {
     try {
       const res = await createRequest("get", "/auth/user");
+
       if (res.status === 200) {
         const resp: any = res.data;
         const data = {
@@ -108,9 +116,6 @@ const SignIn: React.FC = () => {
   const handleRegister = () => {
     router.push("/sign-up");
   };
-  useEffect(() => {
-    GoogleSignin.configure();
-  }, []);
 
   const loginWithGoogle = async () => {
     try {
@@ -125,9 +130,15 @@ const SignIn: React.FC = () => {
             full_name: user.data.user.name,
             email: user.data.user.email,
             password: user.data.user.id,
+            google_id: user.data.user.id,
+            user_avatar: user.data.user.photo,
           }
         );
         const { token, role } = response.data;
+        if (token) {
+          await setStore("token", token);
+          await setStore("role", role);
+        }
         getScreenByRole(role);
       } catch (error) {
         console.error("Login error:", error);
