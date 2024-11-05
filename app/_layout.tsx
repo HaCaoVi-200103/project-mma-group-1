@@ -1,8 +1,8 @@
 import React from "react";
-import { Stack } from "expo-router";
 import { Provider } from "react-redux";
 import { store } from "@redux/store";
 import { useFonts } from "expo-font";
+import StackNavigation from "./Stack";
 
 export default function AppLayout() {
   useFonts({
@@ -16,33 +16,7 @@ export default function AppLayout() {
   });
   return (
     <Provider store={store}>
-      <Stack>
-        <Stack.Screen name="(customerTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(staffTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(managerTabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="DetailScreens/OrderDetail" />
-        <Stack.Screen
-          name="DetailScreens/AllCake"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="DetailScreens/CakeManagementDetail"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="DetailScreens/AddCake"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="DetailScreens/AddTopping"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="DetailScreens/ToppingManagementDetail"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
+      <StackNavigation />
     </Provider>
   );
 }
