@@ -52,6 +52,7 @@ const SignIn: React.FC = () => {
 
       if (token) {
         await setStore("token", token);
+        await setStore("role", role);
       }
       getScreenByRole(role);
     } catch (error) {
@@ -163,7 +164,9 @@ const SignIn: React.FC = () => {
 
         <TouchableOpacity onPress={loginWithGoogle} style={styles.googleButton}>
           <Image
-            source={{ uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" }}
+            source={{
+              uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
+            }}
             style={styles.googleIcon}
           />
           <Image
@@ -269,7 +272,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
     marginRight: 60,
-
   },
   linkButton: {
     marginTop: 15,
