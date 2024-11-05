@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -17,8 +24,7 @@ const AboutStore: React.FC = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await axios.get('http://10.0.2.2:8080/api/v1/stores');
-        console.log('Fetched data:', response.data);
+        const response = await axios.get("http://10.0.2.2:8080/api/v1/stores");
         setStores(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,7 +46,9 @@ const AboutStore: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stores</Text>
-          <Text style={styles.subtitle}>Some stores you might be interested in</Text>
+      <Text style={styles.subtitle}>
+        Some stores you might be interested in
+      </Text>
 
       <FlatList
         data={stores}
@@ -65,38 +73,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f0f4f7',
+    backgroundColor: "#f0f4f7",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
     marginLeft: 5,
-    marginTop:15,
+    marginTop: 15,
   },
-    subtitle: {
+  subtitle: {
     fontSize: 16,
     color: "#666",
     marginVertical: 10,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   storeCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 15,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
   storeImage: {
-    width: '100%',
+    width: "100%",
     height: 160,
   },
   storeInfo: {
@@ -104,15 +112,15 @@ const styles = StyleSheet.create({
   },
   storeName: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#34495e',
+    fontWeight: "bold",
+    color: "#34495e",
     marginBottom: 5,
   },
   storeDetails: {
     fontSize: 16,
-    color: '#7f8c8d',
+    color: "#7f8c8d",
     marginVertical: 2,
   },
 });
 
-export default AboutStore;  
+export default AboutStore;

@@ -64,7 +64,6 @@ const CakeDetail: React.FC = () => {
 
         setCake(cake);
         if (toppings) setThisCakeToppings(toppings);
-        console.log(toppings, thisCakeToppings);
       } else {
         console.error("Invalid data format:", response.data);
       }
