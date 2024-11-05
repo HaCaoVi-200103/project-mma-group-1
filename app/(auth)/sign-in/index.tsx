@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
@@ -49,15 +50,16 @@ const SignIn: React.FC = () => {
       );
 
       const { token, role } = response.data;
-
+      if (response.status === 404) {
+        return Alert.alert("Login failed. Please check your credentials.");
+      }
       if (token) {
         await setStore("token", token);
         await setStore("role", role);
       }
       getScreenByRole(role);
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Login failed. Please check your credentials.");
+      return Alert.alert("Login failed. Please check your credentials.");
     }
   };
 
