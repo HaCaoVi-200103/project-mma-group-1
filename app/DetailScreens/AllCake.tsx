@@ -40,7 +40,7 @@ const AllCake: React.FC = () => {
         );
         setCakes(response.data);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu loại bánh:", error);
+        return;
       }
     };
     fetchCakes();

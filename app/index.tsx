@@ -14,9 +14,24 @@ const Index = () => {
 
   const addProfileRedux = async () => {
     try {
+      const role = await getStore("role");
+
       const res = await createRequest("get", "/auth/user");
       if (res.status === 200) {
-        dispatch(addProfile(res.data));
+        const resp: any = res.data;
+        const data = {
+          _id: resp._id,
+          address: resp.address,
+          email: resp.email,
+          full_name: resp.full_name,
+          google_id: resp.google_id,
+          phone_number: resp.phone_number,
+          user_avatar: resp.user_avatar,
+          user_name: resp.user_name,
+          role: role,
+        };
+
+        dispatch(addProfile(data));
       }
     } catch (error) {
       console.error(error);
@@ -37,7 +52,15 @@ const Index = () => {
       getToken();
     }, [])
   );
+  console.log("profile.role ", profile.role);
 
+  if (profile.role === "customer") {
+    return router.push("/Home");
+  } else if (profile.role === "staff") {
+    return router.push("/StaffOrderManagement");
+  } else if (profile.role === "manager") {
+    return router.push("/Managements");
+  }
   return (
     <View>
       <Home />

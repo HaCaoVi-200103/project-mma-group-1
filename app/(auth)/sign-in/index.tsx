@@ -63,11 +63,24 @@ const SignIn: React.FC = () => {
     }
   };
 
-  const addProfileRedux = async () => {
+  const addProfileRedux = async (role: string) => {
     try {
       const res = await createRequest("get", "/auth/user");
       if (res.status === 200) {
-        dispatch(addProfile(res.data));
+        const resp: any = res.data;
+        const data = {
+          _id: resp._id,
+          address: resp.address,
+          email: resp.email,
+          full_name: resp.full_name,
+          google_id: resp.google_id,
+          phone_number: resp.phone_number,
+          user_avatar: resp.user_avatar,
+          user_name: resp.user_name,
+          role: role,
+        };
+
+        dispatch(addProfile(data));
       }
     } catch (error) {
       console.error(error);
@@ -75,7 +88,7 @@ const SignIn: React.FC = () => {
   };
 
   const getScreenByRole = (role: string) => {
-    addProfileRedux();
+    addProfileRedux(role);
     switch (role.toLowerCase()) {
       case "customer":
         router.push("/Home");
