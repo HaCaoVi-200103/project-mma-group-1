@@ -1,6 +1,6 @@
 import { View } from "react-native";
-import React, { useCallback } from "react";
-import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useLayoutEffect } from "react";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import { getStore } from "utils/AsyncStore";
 import useCreateAxios from "@hooks/axiosHook";
 import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
@@ -11,7 +11,7 @@ const Index = () => {
   const { createRequest } = useCreateAxios();
   const dispatch = useAppDispatch();
   const profile: any = useAppSelector((state) => state.profile.profile);
-
+  const navigation = useNavigation();
   const addProfileRedux = async () => {
     try {
       const role = await getStore("role");
@@ -62,6 +62,7 @@ const Index = () => {
   } else if (profile.role === "manager") {
     return router.push("/Managements");
   }
+
   return (
     <View>
       <Home />

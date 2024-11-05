@@ -100,7 +100,7 @@ export default function OrderDetail() {
         <View style={styles.titleContainer}>
           <Ionicons
             name="arrow-back"
-            onPress={() => router.back()}
+            onPress={() => router.push("/(managerTabs)/Managements")}
             size={28}
             color={Colors.CHOCOLATEBROWN}
           />
