@@ -66,7 +66,7 @@ const SignIn: React.FC = () => {
       }
       getScreenByRole(role);
     } catch (error) {
-      console.log(error)
+      return Alert.alert("Login failed. Please check your credentials.");
     }
   };
 
