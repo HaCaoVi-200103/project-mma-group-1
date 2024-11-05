@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import React, { useCallback, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
-import { getStore } from "utils/AsyncStore";
+import { getStore, removeStore } from "utils/AsyncStore";
 import useCreateAxios from "@hooks/axiosHook";
 import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import { addProfile } from "@redux/features/profile";
@@ -26,7 +26,7 @@ const Index = () => {
   const getToken = async () => {
     const token = await getStore("token");
     const flat = token.length === 0 ? false : true;
-
+    // await removeStore("token");
     if (flat) {
       addProfileRedux();
     }

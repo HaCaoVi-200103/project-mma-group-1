@@ -17,12 +17,18 @@ import { useAppSelector } from "@hooks/reduxHooks";
 
 const Home = () => {
   const profile: any = useAppSelector((state) => state.profile.profile);
+  console.log("PROFILE :", profile.user_avatar);
+
   const data = [
     {
       id: "1",
       component: (
         <GreetingSection
-          avatar={profile && profile.user_avatar ? profile.user_avatar : ""}
+          avatar={
+            profile.user_avatar
+              ? profile.user_avatar
+              : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778"
+          }
           id={profile._id}
           flat={profile._id ? true : false}
         />
@@ -65,14 +71,16 @@ const GreetingSection = ({ flat, id, avatar }) => (
         >
           <Image
             style={[
-              { height: 50, width: 50, borderRadius: 100, marginBottom: 10 },
+              {
+                height: 50,
+                width: 50,
+                borderRadius: 100,
+                marginBottom: 10,
+              },
               styles.loginLink,
             ]}
             source={{
-              uri:
-                avatar !== ""
-                  ? avatar
-                  : "https://firebasestorage.googleapis.com/v0/b/sweetbites-28804.appspot.com/o/customerImages%2Fz5996646852783_53556339af7a8aa947ed5a54f19c2e9c.jpg?alt=media&token=691aef06-a818-4c50-bb80-0144cc1e1778",
+              uri: avatar,
             }}
           />
         </TouchableOpacity>

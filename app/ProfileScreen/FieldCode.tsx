@@ -1,4 +1,5 @@
 import useCreateAxios from "@hooks/axiosHook";
+import { useAppSelector } from "@hooks/reduxHooks";
 import {
   router,
   useFocusEffect,
@@ -41,8 +42,10 @@ const styles = StyleSheet.create({
 });
 
 const CELL_COUNT = 6;
-const id = "6720a5a2588e2bd477bfd1a3";
+// const id = "6720a5a2588e2bd477bfd1a3";
 const FieldCode = () => {
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  const id = profile._id;
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError } from "axios";
 
 interface ErrorResponse {
   message: string;
@@ -27,7 +27,7 @@ const Register: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [userAvatar, setUserAvatar] = useState<string>("");
 
-    React.useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
@@ -37,31 +37,30 @@ const Register: React.FC = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Validate input fields
-if (!username) {
-  Alert.alert("Validation Error", "Please enter your username!");
-  return;
-}
-if (!fullName) {
-  Alert.alert("Validation Error", "Please enter your full name!");
-  return;
-}
-if (!email || !emailPattern.test(email)) {
-  Alert.alert("Validation Error", "Please enter a valid email!");
-  return;
-}
-if (!password || password.length < 6) {
-  Alert.alert("Validation Error", "Please enter your password ");
-  return;
-}
-if (!phoneNumber) {
-  Alert.alert("Validation Error", "Please enter your phone number!");
-  return;
-}
-if (!address) {
-  Alert.alert("Validation Error", "Please enter your address!");
-  return;
-}
-
+    if (!username) {
+      Alert.alert("Validation Error", "Please enter your username!");
+      return;
+    }
+    if (!fullName) {
+      Alert.alert("Validation Error", "Please enter your full name!");
+      return;
+    }
+    if (!email || !emailPattern.test(email)) {
+      Alert.alert("Validation Error", "Please enter a valid email!");
+      return;
+    }
+    if (!password || password.length < 6) {
+      Alert.alert("Validation Error", "Please enter your password ");
+      return;
+    }
+    if (!phoneNumber) {
+      Alert.alert("Validation Error", "Please enter your phone number!");
+      return;
+    }
+    if (!address) {
+      Alert.alert("Validation Error", "Please enter your address!");
+      return;
+    }
 
     const userData = {
       user_name: username,
@@ -75,21 +74,33 @@ if (!address) {
     };
 
     try {
-const response = await axios.post("http://10.0.2.2:8080/api/v1/auth/register", userData);
-      
+      const response = await axios.post(
+        "http://10.0.2.2:8080/api/v1/auth/register",
+        userData
+      );
+
       if (response.status === 201) {
-        Alert.alert("Registration Successful!", "You have successfully registered your account!");
+        Alert.alert(
+          "Registration Successful!",
+          "You have successfully registered your account!"
+        );
         router.push("/sign-in");
       } else {
-        Alert.alert("Registration Failed", response.data.message || "Please try again.");
+        Alert.alert(
+          "Registration Failed",
+          response.data.message || "Please try again."
+        );
       }
     } catch (error) {
       const err = error as AxiosError<ErrorResponse>;
-      
+
       if (err.response && err.response.data) {
-        Alert.alert("Registration Error", err.response.data.message || "Something went wrong.");
+        Alert.alert(
+          "Registration Error",
+          err.response.data.message || "Something went wrong."
+        );
       } else {
-         console.log(error)
+        console.log(error);
         Alert.alert("Registration Error", "An unexpected error occurred.");
       }
     }
@@ -100,7 +111,7 @@ const response = await axios.post("http://10.0.2.2:8080/api/v1/auth/register", u
       <View style={styles.frame}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("@assets/images/logo.jpeg")} 
+            source={require("@assets/images/logo.jpeg")}
             style={styles.logo}
           />
         </View>
@@ -152,20 +163,17 @@ const response = await axios.post("http://10.0.2.2:8080/api/v1/auth/register", u
           value={address}
           onChangeText={setAddress}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Avatar URL (Optional)"
-          placeholderTextColor="#7d7d7d"
-          value={userAvatar}
-          onChangeText={setUserAvatar}
-        />
-
         <TouchableOpacity onPress={handleRegister} style={styles.button}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/sign-in")} style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>Already have an account? Login</Text>
+        <TouchableOpacity
+          onPress={() => router.push("/sign-in")}
+          style={styles.loginButton}
+        >
+          <Text style={styles.loginButtonText}>
+            Already have an account? Login
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

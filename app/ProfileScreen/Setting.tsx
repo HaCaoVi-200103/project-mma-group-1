@@ -3,11 +3,13 @@ import React from "react";
 import { router, useNavigation } from "expo-router";
 import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import { Colors } from "@constants/Colors";
-const customerId = "6720a5a2588e2bd477bfd1a3";
+import { useAppSelector } from "@hooks/reduxHooks";
+// const customerId = "6720a5a2588e2bd477bfd1a3";
 
 const Setting = () => {
   const navigation = useNavigation();
-
+  const profile: any = useAppSelector((state) => state.profile.profile);
+  const customerId = profile._id;
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
