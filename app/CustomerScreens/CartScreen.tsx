@@ -22,32 +22,43 @@ const CartScreen: React.FC = () => {
 
   useEffect(() => {
     const fetchCart = async () => {
-      const cart = await getStore("cart");
-      setCartItems(cart || []);
+      try {
+        const cart = await getStore("cart");
+        const validCart = Array.isArray(cart)
+          ? cart.filter((item: CartItem) => item._id)
+          : [];
+        setCartItems(validCart);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
     };
     fetchCart();
   }, []);
 
   const updateQuantity = async (id: string, delta: number) => {
-    const updatedCart = cartItems.map((item) => {
-      if (item._id === id) {
-        const newQuantity = item.quantity + delta;
-        return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 }; // Đảm bảo số lượng không nhỏ hơn 1
-      }
-      return item;
-    });
+    const updatedCart = cartItems
+      .map((item) => {
+        if (item._id === id) {
+          const newQuantity = item.quantity + delta;
+          return { ...item, quantity: newQuantity }; 
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
     setCartItems(updatedCart);
-    await setStore("cart", JSON.stringify(updatedCart)); // Lưu lại trạng thái mới vào AsyncStorage
-  };
 
-  const clearCart = async () => {
-    try {
-      await removeStore("cart");
-      setCartItems([]);
-    } catch (error) {
-      console.error("Error clearing cart:", error);
-    }
+    await setStore("cart", JSON.stringify(updatedCart));
   };
+  
+
+  // const clearCart = async () => {
+  //   try {
+  //     await removeStore("cart");
+  //     setCartItems([]);
+  //   } catch (error) {
+  //     console.error("Error clearing cart:", error);
+  //   }
+  // };
 
   const renderItem = ({ item }: { item: CartItem }) => (
     <View style={styles.cartItem}>
@@ -88,7 +99,7 @@ const CartScreen: React.FC = () => {
         contentContainerStyle={styles.cartList}
         showsVerticalScrollIndicator={true}
       />
-      <Button title="Clear Cart" onPress={clearCart} />
+      {/* <Button title="Clear Cart" onPress={clearCart} /> */}
     </View>
   );
 };

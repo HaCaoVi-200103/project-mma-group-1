@@ -11,7 +11,6 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import useCreateAxios from "../../hooks/axiosHook";
 import { useRouter } from "expo-router";
-import { getStore } from "utils/AsyncStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Cake {
@@ -40,13 +39,19 @@ const AllCake: React.FC = () => {
         );
         setCakes(response.data);
       } catch (error) {
-        return;
+        console.error("Error fetching cakes:", error);
       }
     };
     fetchCakes();
+
     const fetchCart = async () => {
-      const currentCart = await getStore("user_cart");
-      setCart(currentCart);
+      try {
+        const storedCart = await AsyncStorage.getItem("cart");
+        const currentCart = storedCart ? JSON.parse(storedCart) : [];
+        setCart(Array.isArray(currentCart) ? currentCart : []);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
     };
     fetchCart();
   }, [createRequest]);
@@ -54,7 +59,11 @@ const AllCake: React.FC = () => {
   const addToCartS = async (cake: Cake) => {
     try {
       const storedCart = await AsyncStorage.getItem("cart");
-      const currentCart = storedCart ? JSON.parse(storedCart) : [];
+      let currentCart: Cake[] = [];
+      if (storedCart) {
+        const parsedCart = JSON.parse(storedCart);
+        currentCart = Array.isArray(parsedCart) ? parsedCart : [];
+      }
       const existingItemIndex = currentCart.findIndex(
         (item: Cake) => item._id === cake._id
       );
@@ -66,11 +75,10 @@ const AllCake: React.FC = () => {
       }
       await AsyncStorage.setItem("cart", JSON.stringify(currentCart));
       setCart(currentCart);
+      Alert.alert("Success", "Item added to cart successfully!");
     } catch (error) {
-      return Alert.alert(
-        "Error",
-        "There was a problem adding the item to the cart."
-      );
+      console.error("Error adding item to cart:", error);
+      Alert.alert("Error", "There was a problem adding the item to the cart.");
     }
   };
 
@@ -120,7 +128,9 @@ const AllCake: React.FC = () => {
           <Ionicons name="cart-outline" size={35} color="#FF6347" />
           {cart.length > 0 && (
             <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cart.length}</Text>
+              <Text style={styles.cartBadgeText}>
+                {cart.reduce((acc, item) => acc + (item.quantity || 1), 0)}
+              </Text>
             </View>
           )}
         </TouchableOpacity>
