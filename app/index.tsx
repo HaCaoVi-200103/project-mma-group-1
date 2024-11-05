@@ -1,7 +1,7 @@
 import { View } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { router, useFocusEffect } from "expo-router";
-import { getStore, removeStore } from "utils/AsyncStore";
+import { getStore } from "utils/AsyncStore";
 import useCreateAxios from "@hooks/axiosHook";
 import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import { addProfile } from "@redux/features/profile";
@@ -16,22 +16,24 @@ const Index = () => {
     try {
       const role = await getStore("role");
 
-      const res = await createRequest("get", "/auth/user");
-      if (res.status === 200) {
-        const resp: any = res.data;
-        const data = {
-          _id: resp._id,
-          address: resp.address,
-          email: resp.email,
-          full_name: resp.full_name,
-          google_id: resp.google_id,
-          phone_number: resp.phone_number,
-          user_avatar: resp.user_avatar,
-          user_name: resp.user_name,
-          role: role,
-        };
+      if (role.length !== 0) {
+        const res = await createRequest("get", "/auth/user");
+        if (res.status === 200) {
+          const resp: any = res.data;
+          const data = {
+            _id: resp._id,
+            address: resp.address,
+            email: resp.email,
+            full_name: resp.full_name,
+            google_id: resp.google_id,
+            phone_number: resp.phone_number,
+            user_avatar: resp.user_avatar,
+            user_name: resp.user_name,
+            role: role,
+          };
 
-        dispatch(addProfile(data));
+          dispatch(addProfile(data));
+        }
       }
     } catch (error) {
       console.error(error);
@@ -49,10 +51,9 @@ const Index = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getToken();
+      getToken().catch((error) => null);
     }, [])
   );
-  console.log("profile.role ", profile.role);
 
   if (profile.role === "customer") {
     return router.push("/Home");

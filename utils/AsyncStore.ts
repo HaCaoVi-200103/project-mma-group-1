@@ -36,7 +36,7 @@ export const setStore = async (key: string, value: string) => {
 export const logout = async () => {
   GoogleSignin.signOut();
   await removeStore("token");
-
+  await removeStore("role")
   return router.push("/");
 };
 

@@ -67,8 +67,10 @@ const AllCake: React.FC = () => {
       await AsyncStorage.setItem("cart", JSON.stringify(currentCart));
       setCart(currentCart);
     } catch (error) {
-      console.error("Error adding item to cart:", error);
-      Alert.alert("Error", "There was a problem adding the item to the cart.");
+      return Alert.alert(
+        "Error",
+        "There was a problem adding the item to the cart."
+      );
     }
   };
 

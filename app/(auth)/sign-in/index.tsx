@@ -111,6 +111,7 @@ const SignIn: React.FC = () => {
   useEffect(() => {
     GoogleSignin.configure();
   }, []);
+
   const loginWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -127,7 +128,7 @@ const SignIn: React.FC = () => {
           }
         );
         const { token, role } = response.data;
-        getScreenByRole(role, token);
+        getScreenByRole(role);
       } catch (error) {
         console.error("Login error:", error);
         alert("Login failed. Please check your credentials.");
