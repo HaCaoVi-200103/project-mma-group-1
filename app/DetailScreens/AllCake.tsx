@@ -26,6 +26,7 @@ const ITEMS_PER_PAGE = 8;
 const AllCake: React.FC = () => {
   const [cakes, setCakes] = useState<Cake[]>([]);
   const [cart, setCart] = useState<Cake[]>([]);
+  const [cartCount, setCartCount] = useState(0); // Biến để hiển thị số lượng sản phẩm khác nhau trong icon giỏ hàng
   const [currentPage, setCurrentPage] = useState(1);
   const { createRequest } = useCreateAxios();
   const router = useRouter();
@@ -49,6 +50,7 @@ const AllCake: React.FC = () => {
         const storedCart = await AsyncStorage.getItem("cart");
         const currentCart = storedCart ? JSON.parse(storedCart) : [];
         setCart(Array.isArray(currentCart) ? currentCart : []);
+        setCartCount(Array.isArray(currentCart) ? currentCart.length : 0); // Chỉ tính số sản phẩm khác nhau
       } catch (error) {
         console.error("Error fetching cart:", error);
       }
@@ -60,22 +62,35 @@ const AllCake: React.FC = () => {
     try {
       const storedCart = await AsyncStorage.getItem("cart");
       let currentCart: Cake[] = [];
+      let isNewItemAdded = false;
+
       if (storedCart) {
         const parsedCart = JSON.parse(storedCart);
         currentCart = Array.isArray(parsedCart) ? parsedCart : [];
       }
+
       const existingItemIndex = currentCart.findIndex(
         (item: Cake) => item._id === cake._id
       );
+
       if (existingItemIndex !== -1) {
+        // Nếu sản phẩm đã tồn tại, chỉ tăng số lượng mà không thay đổi cartCount
         currentCart[existingItemIndex].quantity =
           (currentCart[existingItemIndex].quantity || 0) + 1;
       } else {
+        // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới và tăng cartCount
         currentCart.push({ ...cake, quantity: 1 });
+        isNewItemAdded = true;
       }
+
       await AsyncStorage.setItem("cart", JSON.stringify(currentCart));
       setCart(currentCart);
-      Alert.alert("Success", "Item added to cart successfully!");
+
+      // Cập nhật cartCount nếu là sản phẩm mới
+      if (isNewItemAdded) {
+        setCartCount(cartCount + 1);
+        Alert.alert("Success", "Item added to cart successfully!");
+      }
     } catch (error) {
       console.error("Error adding item to cart:", error);
       Alert.alert("Error", "There was a problem adding the item to the cart.");
@@ -126,11 +141,9 @@ const AllCake: React.FC = () => {
           onPress={() => router.push("/CustomerScreens/CartScreen")}
         >
           <Ionicons name="cart-outline" size={35} color="#FF6347" />
-          {cart.length > 0 && (
+          {cartCount > 0 && (
             <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>
-                {cart.reduce((acc, item) => acc + (item.quantity || 1), 0)}
-              </Text>
+              <Text style={styles.cartBadgeText}>{cartCount}</Text>
             </View>
           )}
         </TouchableOpacity>

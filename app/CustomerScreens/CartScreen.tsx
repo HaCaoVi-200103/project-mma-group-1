@@ -40,7 +40,7 @@ const CartScreen: React.FC = () => {
       .map((item) => {
         if (item._id === id) {
           const newQuantity = item.quantity + delta;
-          return { ...item, quantity: newQuantity }; 
+          return { ...item, quantity: newQuantity };
         }
         return item;
       })
@@ -49,7 +49,6 @@ const CartScreen: React.FC = () => {
 
     await setStore("cart", JSON.stringify(updatedCart));
   };
-  
 
   // const clearCart = async () => {
   //   try {
