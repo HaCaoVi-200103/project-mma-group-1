@@ -5,7 +5,6 @@ import HeaderCustomize from "@components/ManagerStaffComponent/HeaderCustomize";
 import Input from "@components/ManagerStaffComponent/Input";
 import { Colors } from "@constants/Colors";
 import { router } from "expo-router";
-import useCreateAxios from "@hooks/axiosHook";
 import axios from "axios";
 import { useAppSelector } from "@hooks/reduxHooks";
 // const id = "6720a5a2588e2bd477bfd1a3";
@@ -14,7 +13,7 @@ const ForgotPassword = () => {
   const profile: any = useAppSelector((state) => state.profile.profile);
   const id = profile._id;
   const navigation = useNavigation();
-  const [oldPass, setOldPass] = useState("");
+  const [email, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirm, setConfirm] = useState("");
   React.useLayoutEffect(() => {
@@ -24,7 +23,7 @@ const ForgotPassword = () => {
   }, [navigation]);
 
   const handleSendEmailCode = async () => {
-    if (oldPass === "" || newPass === "" || confirm === "") {
+    if (email === "" || newPass === "" || confirm === "") {
       return Alert.alert("Missing required field!!!");
     }
 
@@ -33,23 +32,19 @@ const ForgotPassword = () => {
     }
 
     const res = await axios.post(
-      "http://10.0.2.2:8080/api/v1/profile/check-password",
+      "http://10.0.2.2:8080/api/v1/profile/check-email",
       {
-        userId: id,
-        password: oldPass,
+        email: email,
       }
     );
-    if (res.status === 200) {
-      if (res.data) {
-        return router.push({
-          pathname: "/ProfileScreen/FieldCode",
-          params: { newPass: newPass },
-        });
-      }
-      return Alert.alert("Old Password is incorrect!!!");
+    if (res.data.statusCode === 200) {
+      return router.push({
+        pathname: "/ForgotPass/VerifyCode",
+        params: { email: email, newPass: newPass },
+      });
     }
 
-    return Alert.alert("Old Password is incorrect!!!");
+    return Alert.alert(res.data.message);
   };
 
   return (
