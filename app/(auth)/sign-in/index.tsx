@@ -19,8 +19,8 @@ import { addProfile } from "@redux/features/profile";
 interface LoginResponse {
   token: string;
   role: string;
-  statusCode:number;
-  message:string;
+  statusCode: number;
+  message: string;
 }
 
 const SignIn: React.FC = () => {
@@ -53,12 +53,12 @@ const SignIn: React.FC = () => {
       const response: AxiosResponse<LoginResponse> = await createRequest(
         "post",
         "/auth/login",
-        { user_name, password }
+        { user_name, email: user_name, password }
       );
 
       const { token, role } = response.data;
       if (response.data.statusCode === 404) {
-        return Alert.alert(response.data.message,response.data.message);
+        return Alert.alert(response.data.message, response.data.message);
       }
       if (token) {
         await setStore("token", token);
