@@ -14,6 +14,7 @@ import { Colors } from "@constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { CustomerModal } from "@components/CustomerModal";
 import { OrderDetailCardItem } from "@components/Order/OrderDetailCardItem";
+import { getStore } from "utils/AsyncStore";
 
 export default function OrderDetail() {
   const { createRequest } = useCreateAxios();
@@ -94,13 +95,20 @@ export default function OrderDetail() {
   const year = orderDate.getFullYear();
 
   const formattedDate = `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
+  const handle = async () => {
+    const role = await getStore("role");
+    if (role === "manager") {
+      return router.push("/(managerTabs)/Managements");
+    }
+    return router.push("/(staffTabs)/StaffOrderManagement");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.orderDetailContent}>
         <View style={styles.titleContainer}>
           <Ionicons
             name="arrow-back"
-            onPress={() => router.push("/(managerTabs)/Managements")}
+            onPress={() => handle()}
             size={28}
             color={Colors.CHOCOLATEBROWN}
           />
