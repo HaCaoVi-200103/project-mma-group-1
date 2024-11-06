@@ -42,11 +42,7 @@ const styles = StyleSheet.create({
 });
 
 const CELL_COUNT = 6;
-// const id = "6720a5a2588e2bd477bfd1a3";
-const FieldCode = () => {
-  const profile: any = useAppSelector((state) => state.profile.profile);
-  const id = profile._id;
-  const email = profile.email;
+const VerifyCode = () => {
   const [value, setValue] = useState("");
   const [code, setCode] = useState("");
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
@@ -55,7 +51,7 @@ const FieldCode = () => {
     setValue,
   });
   const navigation = useNavigation();
-  const { newPass } = useLocalSearchParams();
+  const { newPass, email } = useLocalSearchParams();
   const { createRequest } = useCreateAxios();
 
   const callApiSendCode = async () => {
@@ -80,8 +76,8 @@ const FieldCode = () => {
 
   const callApiChangePassword = async () => {
     try {
-      const res = await createRequest("post", "/profile/change-password", {
-        id: id,
+      const res = await createRequest("post", "/profile/forgot-password", {
+        email: email,
         password: newPass,
       });
       return res;
@@ -104,7 +100,7 @@ const FieldCode = () => {
             Alert.alert("Change password successfully");
             setCode("");
             setValue("");
-            return router.push("/ProfileScreen");
+            return router.push("/(auth)/sign-in");
           }
           return Alert.alert("Status code is " + res?.status);
         } else {
@@ -170,4 +166,4 @@ const FieldCode = () => {
   );
 };
 
-export default FieldCode;
+export default VerifyCode;
