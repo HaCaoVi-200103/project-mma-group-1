@@ -11,7 +11,6 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import useCreateAxios from "../../hooks/axiosHook";
 import { useRouter } from "expo-router";
-import { getStore } from "utils/AsyncStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Cake {
@@ -27,6 +26,7 @@ const ITEMS_PER_PAGE = 8;
 const AllCake: React.FC = () => {
   const [cakes, setCakes] = useState<Cake[]>([]);
   const [cart, setCart] = useState<Cake[]>([]);
+  const [cartCount, setCartCount] = useState(0); // Biến để hiển thị số lượng sản phẩm khác nhau trong icon giỏ hàng
   const [currentPage, setCurrentPage] = useState(1);
   const { createRequest } = useCreateAxios();
   const router = useRouter();
@@ -40,13 +40,20 @@ const AllCake: React.FC = () => {
         );
         setCakes(response.data);
       } catch (error) {
-        return;
+        console.error("Error fetching cakes:", error);
       }
     };
     fetchCakes();
+
     const fetchCart = async () => {
-      const currentCart = await getStore("user_cart");
-      setCart(currentCart);
+      try {
+        const storedCart = await AsyncStorage.getItem("cart");
+        const currentCart = storedCart ? JSON.parse(storedCart) : [];
+        setCart(Array.isArray(currentCart) ? currentCart : []);
+        setCartCount(Array.isArray(currentCart) ? currentCart.length : 0); // Chỉ tính số sản phẩm khác nhau
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
     };
     fetchCart();
   }, [createRequest]);
@@ -54,23 +61,39 @@ const AllCake: React.FC = () => {
   const addToCartS = async (cake: Cake) => {
     try {
       const storedCart = await AsyncStorage.getItem("cart");
-      const currentCart = storedCart ? JSON.parse(storedCart) : [];
+      let currentCart: Cake[] = [];
+      let isNewItemAdded = false;
+
+      if (storedCart) {
+        const parsedCart = JSON.parse(storedCart);
+        currentCart = Array.isArray(parsedCart) ? parsedCart : [];
+      }
+
       const existingItemIndex = currentCart.findIndex(
         (item: Cake) => item._id === cake._id
       );
+
       if (existingItemIndex !== -1) {
+        // Nếu sản phẩm đã tồn tại, chỉ tăng số lượng mà không thay đổi cartCount
         currentCart[existingItemIndex].quantity =
           (currentCart[existingItemIndex].quantity || 0) + 1;
       } else {
+        // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới và tăng cartCount
         currentCart.push({ ...cake, quantity: 1 });
+        isNewItemAdded = true;
       }
+
       await AsyncStorage.setItem("cart", JSON.stringify(currentCart));
       setCart(currentCart);
+
+      // Cập nhật cartCount nếu là sản phẩm mới
+      if (isNewItemAdded) {
+        setCartCount(cartCount + 1);
+        Alert.alert("Success", "Item added to cart successfully!");
+      }
     } catch (error) {
-      return Alert.alert(
-        "Error",
-        "There was a problem adding the item to the cart."
-      );
+      console.error("Error adding item to cart:", error);
+      Alert.alert("Error", "There was a problem adding the item to the cart.");
     }
   };
 
@@ -109,6 +132,8 @@ const AllCake: React.FC = () => {
       setCurrentPage(currentPage + 1);
   };
 
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -118,9 +143,9 @@ const AllCake: React.FC = () => {
           onPress={() => router.push("/CustomerScreens/CartScreen")}
         >
           <Ionicons name="cart-outline" size={35} color="#FF6347" />
-          {cart.length > 0 && (
+          {cartCount > 0 && (
             <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cart.length}</Text>
+              <Text style={styles.cartBadgeText}>{cartCount}</Text>
             </View>
           )}
         </TouchableOpacity>
