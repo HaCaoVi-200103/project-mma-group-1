@@ -132,6 +132,8 @@ const AllCake: React.FC = () => {
       setCurrentPage(currentPage + 1);
   };
 
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>

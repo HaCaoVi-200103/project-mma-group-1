@@ -1,3 +1,4 @@
+import { router, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -19,6 +20,7 @@ interface CartItem {
 
 const CartScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -50,14 +52,6 @@ const CartScreen: React.FC = () => {
     await setStore("cart", JSON.stringify(updatedCart));
   };
 
-  // const clearCart = async () => {
-  //   try {
-  //     await removeStore("cart");
-  //     setCartItems([]);
-  //   } catch (error) {
-  //     console.error("Error clearing cart:", error);
-  //   }
-  // };
 
   const renderItem = ({ item }: { item: CartItem }) => (
     <View style={styles.cartItem}>
@@ -98,7 +92,10 @@ const CartScreen: React.FC = () => {
         contentContainerStyle={styles.cartList}
         showsVerticalScrollIndicator={true}
       />
-      {/* <Button title="Clear Cart" onPress={clearCart} /> */}
+      <Button
+        title="Payment"
+        onPress={() => router.push("/CreOrder/CreateOrder")}
+      />
     </View>
   );
 };
